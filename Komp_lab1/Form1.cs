@@ -192,14 +192,17 @@ namespace Komp_lab1
         }
         private void AboutProgram_Click(object sender, EventArgs e)
         {
-            string url = "";
+            string url = "https://github.com/StasyaShev4/Komp_lab1/blob/master/README.md";
             Process.Start(url);
         }
         private void butt_help_Click(object sender, EventArgs e)
         {
             CallingHelp_Click(sender, e);
         }
-
+        private void butt_about_program_Click(object sender, EventArgs e)
+        {
+            AboutProgram_Click(sender, e);
+        }
 
 
         private void butt_cancel_Click(object sender, EventArgs e)
@@ -273,6 +276,6 @@ namespace Komp_lab1
             CheckingForChanges(sender, e);
         }
 
-       
+        
     }
 }

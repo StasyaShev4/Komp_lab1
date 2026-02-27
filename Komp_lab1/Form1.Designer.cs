@@ -126,6 +126,7 @@
             this.butt_about_program.Size = new System.Drawing.Size(58, 33);
             this.butt_about_program.TabIndex = 12;
             this.butt_about_program.UseVisualStyleBackColor = true;
+            this.butt_about_program.Click += new System.EventHandler(this.butt_about_program_Click);
             // 
             // butt_help
             // 
@@ -451,7 +452,7 @@
             // CallingHelp
             // 
             this.CallingHelp.Name = "CallingHelp";
-            this.CallingHelp.Size = new System.Drawing.Size(197, 26);
+            this.CallingHelp.Size = new System.Drawing.Size(224, 26);
             this.CallingHelp.Text = "Вызов справки";
             this.CallingHelp.Click += new System.EventHandler(this.CallingHelp_Click);
             // 
