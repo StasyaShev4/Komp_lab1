@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using System.Windows.Forms;
 
 namespace Komp_lab1
@@ -46,6 +47,7 @@ namespace Komp_lab1
         }
         public void Select_all() {
             richTextBox.SelectAll();
+            richTextBox.Focus();
         }
 
 

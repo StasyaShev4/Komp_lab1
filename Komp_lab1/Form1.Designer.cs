@@ -71,20 +71,19 @@
             this.CallingHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutProgram = new System.Windows.Forms.ToolStripMenuItem();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -106,7 +105,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1060, 89);
+            this.panel1.Size = new System.Drawing.Size(882, 96);
             this.panel1.TabIndex = 0;
             // 
             // label1
@@ -249,7 +248,7 @@
             this.справкаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1060, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(882, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -452,7 +451,7 @@
             // CallingHelp
             // 
             this.CallingHelp.Name = "CallingHelp";
-            this.CallingHelp.Size = new System.Drawing.Size(224, 26);
+            this.CallingHelp.Size = new System.Drawing.Size(197, 26);
             this.CallingHelp.Text = "Вызов справки";
             this.CallingHelp.Click += new System.EventHandler(this.CallingHelp_Click);
             // 
@@ -461,39 +460,18 @@
             this.AboutProgram.Name = "AboutProgram";
             this.AboutProgram.Size = new System.Drawing.Size(224, 26);
             this.AboutProgram.Text = "О программе";
+            this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
             // 
             // richTextBox1
             // 
             this.richTextBox1.BackColor = System.Drawing.Color.White;
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.richTextBox1.Location = new System.Drawing.Point(0, 0);
+            this.richTextBox1.Location = new System.Drawing.Point(98, 0);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(985, 228);
+            this.richTextBox1.Size = new System.Drawing.Size(784, 269);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.panel2.Controls.Add(this.panel4);
-            this.panel2.Controls.Add(this.richTextBox2);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 89);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1060, 228);
-            this.panel2.TabIndex = 1;
-            // 
-            // panel4
-            // 
-            this.panel4.AutoSize = true;
-            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.panel4.Controls.Add(this.richTextBox1);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(75, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(985, 228);
-            this.panel4.TabIndex = 14;
             // 
             // richTextBox2
             // 
@@ -503,55 +481,70 @@
             this.richTextBox2.Location = new System.Drawing.Point(0, 0);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox2.Size = new System.Drawing.Size(75, 228);
+            this.richTextBox2.Size = new System.Drawing.Size(98, 269);
             this.richTextBox2.TabIndex = 13;
             this.richTextBox2.Text = "";
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1060, 187);
+            this.dataGridView1.Size = new System.Drawing.Size(882, 184);
             this.dataGridView1.TabIndex = 0;
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // panel3
+            // splitContainer1
             // 
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.panel3.Controls.Add(this.dataGridView1);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 317);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1060, 187);
-            this.panel3.TabIndex = 14;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 96);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.splitContainer1.Panel1.Controls.Add(this.richTextBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.richTextBox2);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
+            this.splitContainer1.Size = new System.Drawing.Size(882, 457);
+            this.splitContainer1.SplitterDistance = 269;
+            this.splitContainer1.TabIndex = 14;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1060, 504);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
+            this.ClientSize = new System.Drawing.Size(882, 553);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.panel1);
+            this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Text Editor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel3.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -560,7 +553,6 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem открытьФайлToolStripMenuItem;
@@ -584,8 +576,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.RichTextBox richTextBox2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.ToolStripMenuItem createTSM;
         private System.Windows.Forms.ToolStripMenuItem openTSM;
         private System.Windows.Forms.ToolStripMenuItem saveTSM;
@@ -608,6 +598,7 @@
         private System.Windows.Forms.ToolStripMenuItem CallingHelp;
         private System.Windows.Forms.ToolStripMenuItem AboutProgram;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
 

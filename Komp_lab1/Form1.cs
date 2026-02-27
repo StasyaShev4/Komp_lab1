@@ -21,6 +21,7 @@ namespace Komp_lab1
             correction = new Correction(richTextBox1);
             richTextBox1.VScroll += RichTextBox1_VScroll;
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
+            OutputTSM.Visible = false;
             LineNumbers();
         }
         private void LineNumbers()
@@ -189,6 +190,11 @@ namespace Komp_lab1
             string url = "https://docs.google.com/document/d/1qRyjYO0fhZQAdFL5vFgSz6H5AtVZflcTwC2yOMWvJPo/edit?usp=sharing";
             Process.Start(url);
         }
+        private void AboutProgram_Click(object sender, EventArgs e)
+        {
+            string url = "";
+            Process.Start(url);
+        }
         private void butt_help_Click(object sender, EventArgs e)
         {
             CallingHelp_Click(sender, e);
@@ -259,6 +265,10 @@ namespace Komp_lab1
         }
 
         private void Output_Click(object sender, EventArgs e)
+        {
+            CheckingForChanges(sender, e);
+        }
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             CheckingForChanges(sender, e);
         }
