@@ -25,7 +25,7 @@ namespace Komp_lab1
             "string", "int", "bool", "array", "float", "struct"
         };
         private readonly HashSet<string> separators = new HashSet<string> {
-            "{", "}", ";", ",", "[" , "]"
+            "{", "}", ";", "[" , "]"
         };
         public LexicalAnalyzer(string text) 
         {
@@ -63,7 +63,7 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
-                if (c == '\'')
+                if (c == '\'' || c == '\"')
                 {
                     tokens.Add(ReadString());
                     continue;
@@ -152,9 +152,9 @@ namespace Komp_lab1
             bool isFloat = false;
 
             while (position < input.Length &&
-                  (char.IsDigit(input[position]) || input[position] == '.'))
+                  (char.IsDigit(input[position]) || input[position] == '.' || input[position] == ','))
             {
-                if (input[position] == '.')
+                if (input[position] == '.' || input[position] == ',')
                     isFloat = true;
 
                 position++;
@@ -170,9 +170,10 @@ namespace Komp_lab1
         Token ReadString() 
         {
             int start = position;
+            char quote = input[position];
             position++;
 
-            while (position < input.Length && input[position] != '\'')
+            while (position < input.Length && input[position] != quote)
             {
                 position++;
             }
