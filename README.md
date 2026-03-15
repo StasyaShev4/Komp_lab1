@@ -29,23 +29,25 @@ struct Car {
 };
 
 struct User {
-    int $id;
-    string $name;
-    bool $isAdmin;
-    array $tags;
+    int $id = 123;
+    string $name = 'aboba';
+    bool $isAdmin = false;
+    array $tags = [];
 };
 ```
 
 **Перечень допустимых лексем:**
 
-| **Тип лексемы**      | **Примеры**                                                                   |
-| -------------------- | ----------------------------------------------------------------------------- |
-| Ключевые слова       | `struct`, `string`, `int`, `bool`, `array`, `float`                           |
-| Идентификаторы       | `Employee`, `firstName`, `lastName`, `salary`, `fullTime`, `skills`, `rating` |
-| Переменные PHP       | `$firstName`, `$lastName`, `$salary`                                          |
-| Разделители          | `{`, `}`, `;`                                                                 |
-| Пробельные символы   | пробел, табуляция, новая строка                                               |
-| Недопустимые символы | всё остальное                                                                 |
+| **Тип лексемы**      | **Примеры**                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| Ключевые слова       | `struct`, `string`, `int`, `bool`, `array`, `float`                                             |
+| Идентификаторы       | `Employee`, `firstName`, `lastName`, `salary`, `fullTime`, `skills`, `rating`                   |
+| Переменные PHP       | `$firstName`, `$lastName`, `$salary`                                                            |
+| Разделители          | `{`, `}`, `[` ,`]`, `;`                                                                         |
+| Операторы            | `=`                                                                                             |
+| Литеры               | Строковый: `'aboba'`<br>Численные: целые (`123`), дробные (`3.14`)<br>Бурливые: `true`, `false` |
+| Пробельные символы   | пробел, табуляция, новая строка                                                                 |
+| Недопустимые символы | всё остальное                                                                                   |
 
 
 ### Диаграмма состояний: 
@@ -63,6 +65,18 @@ struct Employee {
 };
 ```
 ![[Pasted image 20260315230439.png]](1.png)
+
+
+```
+struct User {
+    int $id = 123;
+    float $a = 3,14;
+    string $name = "Guest";
+    bool $isAdmin = false;
+    array $tags = [];
+};
+```
+![[Pasted image 20260316002518.png]] (3.png)
 
 ```
 struct Abc {
