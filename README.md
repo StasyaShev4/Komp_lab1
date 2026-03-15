@@ -49,7 +49,7 @@ struct User {
 
 
 ### Диаграмма состояний: 
-![[Scaner.drawio.png]]
+![[Scaner.drawio.png]](Scaner.drawio.png)
 
 
 ### Тестовые примеры:
@@ -62,7 +62,7 @@ struct Employee {
     bool $fullTime;
 };
 ```
-![[Pasted image 20260315230439.png]]
+![[Pasted image 20260315230439.png]](Pasted image 20260315230439.png)
 
 ```
 struct Abc {
@@ -71,4 +71,4 @@ struct Abc {
     " @ - + //
 };
 ```
-![[Pasted image 20260315230754.png]]
+![[Pasted image 20260315230754.png]](Pasted image 20260315230754.png)
