@@ -14,8 +14,7 @@ namespace Komp_lab1
         Variable,
         Separator,
         Whitespace,
-        Unknown,
-        EndOfFile
+        Unknown
     }
     internal class Token
     {

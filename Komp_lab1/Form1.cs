@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection.Emit;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
@@ -15,13 +16,20 @@ namespace Komp_lab1
         Correction correction;
         string filename;
         bool filesave = false;
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        private const int WM_VSCROLL = 0x115;
         public Form1()
         {
             InitializeComponent();
             label1.Text = "";
+            richTextBox2.ReadOnly = true;
+            richTextBox2.Enabled = false;
+            richTextBox2.ScrollBars = RichTextBoxScrollBars.None;
             correction = new Correction(richTextBox1);
             richTextBox1.VScroll += RichTextBox1_VScroll;
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
+            dataGridView1.CellClick += DataGridView1_CellClick;
             LineNumbers();
             DGInit();
         }
@@ -51,6 +59,7 @@ namespace Komp_lab1
                 }
             };
             dataGridView1.Columns.AddRange(columns);
+            dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
         }
         private void LineNumbers()
         {
@@ -73,14 +82,44 @@ namespace Komp_lab1
         }
         private void RichTextBox1_VScroll(object sender, EventArgs e)
         {
-            richTextBox2.SelectionStart = richTextBox1.GetCharIndexFromPosition(new Point(0, 0));
-            richTextBox2.ScrollToCaret();
+            int firstIndex = richTextBox1.GetCharIndexFromPosition(new Point(0, 0));
+            int firstLine = richTextBox1.GetLineFromCharIndex(firstIndex);
+
+            int index = richTextBox2.GetFirstCharIndexFromLine(firstLine);
+
+            if (index >= 0)
+            {
+                richTextBox2.SelectionStart = index;
+                richTextBox2.ScrollToCaret();
+            }
         }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
             LineNumbers();
+            RichTextBox1_VScroll(null, null);
         }
+
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e) 
+        {
+            if (e.RowIndex < 0) return;
+
+            var row = dataGridView1.Rows[e.RowIndex];
+            Token token = row.Tag as Token;
+
+            if (token == null) return;
+
+            int pos = token.Position;
+            int length = token.Value.Length;
+
+            richTextBox1.Focus();
+            richTextBox1.SelectionStart = pos;
+            richTextBox1.SelectionLength = length;
+            richTextBox1.ScrollToCaret();
+        }
+
+
+
         private bool CheckingForChanges()
         {
             if (IsFileContentChanged())
@@ -290,8 +329,6 @@ namespace Komp_lab1
                     return "Разделитель (пробел)";
                 case TokenType.Unknown:
                     return "Неизвестный";
-                case TokenType.EndOfFile:
-                    return "Конец файла";
                 default:
                     return type.ToString();
             }
@@ -321,6 +358,10 @@ namespace Komp_lab1
         }
         private void RunLexicalAnalyzer()
         {
+            richTextBox1.SelectAll();
+            richTextBox1.SelectionColor = Color.Black;
+            richTextBox1.DeselectAll();
+
             try
             {
                 string inputText = richTextBox1.Text;
@@ -340,7 +381,17 @@ namespace Komp_lab1
                     string tokenType = GetTokenTypeString(token.Type);
                     int tokenCode = GetTokenCode(token.Type, token.Value);
                     string location = Position(token.Position, token.Value, token.Line);
-                    dataGridView1.Rows.Add(tokenCode,tokenType, token.Value, location );
+                    //dataGridView1.Rows.Add(tokenCode,tokenType, token.Value, location );
+                    int rowIndex = dataGridView1.Rows.Add(tokenCode, tokenType, token.Value, location);
+                    dataGridView1.Rows[rowIndex].Tag = token;
+
+                    if (token.Type == TokenType.Unknown)
+                    {
+                        richTextBox1.SelectionStart = token.Position;
+                        richTextBox1.SelectionLength = token.Value.Length;
+                        richTextBox1.SelectionColor = Color.Red;
+                        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
+                    }
                 }
                 label1.Text = $"Найдено токенов: {tokens.Count}";
             }
@@ -354,12 +405,10 @@ namespace Komp_lab1
             int val = value.Length;
             if (value == "(пробел)")
                 val = 0;
-            if (pos == 0)
-                pos = 1;
-            if (val == 1)
+           if (val == 1)
                 val = 0;
 
-            string str = $"строка {line}, {pos}-{pos + val}";
+            string str = $"строка {line}, {pos + 1}-{pos + val + 1}";
             return str;
         }
         private void butt_run_Click(object sender, EventArgs e)

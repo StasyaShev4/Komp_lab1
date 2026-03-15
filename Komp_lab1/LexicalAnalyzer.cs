@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,6 @@ namespace Komp_lab1
         private string input;
         private int position = 0;
         private int line = 1;
-        //private int linePosition = 1;
 
         private readonly HashSet<string> keywords = new HashSet<string> {
             "string", "int", "bool", "array", "float", "struct"
@@ -55,7 +55,7 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
-                if (char.IsLetter(c)) 
+                if (IsLatinLetter(c) || c == '_')
                 {
                     tokens.Add(ReadIndentifier());
                     continue;
@@ -65,7 +65,6 @@ namespace Komp_lab1
                     tokens.Add(ReadVariable());
                     continue;
                 }
-                //if (c == '{' || c == '}' || c == ';')
                 if (separators.Contains(c.ToString()))
                 {
                     tokens.Add(new Token(TokenType.Separator, c.ToString(), position, line));
@@ -73,12 +72,27 @@ namespace Komp_lab1
                     continue;
                 }
 
-                tokens.Add(new Token(TokenType.Unknown, c.ToString(), position, line));
-                position ++;
+                tokens.Add(Unknown());
+                
             }
             return tokens;
         }
-
+        Token Unknown() 
+        {
+            int start = position, startLP = line;
+            //position++;
+            
+            while (position < input.Length &&
+                input[position] != ' ' &&
+                input[position] != '\n' &&
+                input[position] != '\r' &&
+                !separators.Contains(input[position].ToString()))
+            { 
+                position++;
+            }
+            string value = input.Substring(start, position - start);
+            return new Token(TokenType.Unknown, value, start, startLP);
+        }
         Token ReadVariable()
         {
             int start = position, startLP = line;
@@ -107,6 +121,10 @@ namespace Komp_lab1
                 return new Token(TokenType.Keyword, word, start, startLP);
 
             return new Token(TokenType.Identifier, word, start, startLP);
+        }
+        private bool IsLatinLetter(char c)
+        {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         }
     }
 }
