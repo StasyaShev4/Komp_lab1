@@ -1,0 +1,19 @@
+struct Employee {
+    string $firstName;
+    string $lastName;
+    int $salary;
+    bool $fullTime;
+};
+
+struct Car {
+    string $model;
+    int $year;
+    float $engine;
+};
+
+struct User {
+    int $id = 0;
+    string $name = "Guest";
+    bool $isAdmin = false;
+    array $tags = [];
+};

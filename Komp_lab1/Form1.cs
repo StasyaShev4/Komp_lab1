@@ -338,8 +338,10 @@ namespace Komp_lab1
             switch (type)
             {
                 case TokenType.Keyword:
-                    return 2; 
+                    return 1; 
                 case TokenType.Identifier:
+                    return 2;
+                case TokenType.Whitespace:
                     return 3;
                 case TokenType.Variable:
                     return 5;
@@ -348,8 +350,6 @@ namespace Komp_lab1
                     if (value == "{") return 4;
                     if (value == "}") return 7;
                     return 0;
-                case TokenType.Whitespace:
-                    return 1;
                 case TokenType.Unknown:
                     return 0;
                 default:
