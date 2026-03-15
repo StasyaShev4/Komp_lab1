@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.butt_about_program = new System.Windows.Forms.Button();
             this.butt_help = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
+            this.butt_run = new System.Windows.Forms.Button();
             this.butt_paste = new System.Windows.Forms.Button();
             this.butt_cut = new System.Windows.Forms.Button();
             this.butt_copy = new System.Windows.Forms.Button();
@@ -65,8 +66,7 @@
             this.тестовыйПримерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.списокЛитературыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.исходныйКодПрограммыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.готовыеЗапросыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OutputTSM = new System.Windows.Forms.ToolStripMenuItem();
+            this.RunTSM = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CallingHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutProgram = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,7 +92,7 @@
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.butt_about_program);
             this.panel1.Controls.Add(this.butt_help);
-            this.panel1.Controls.Add(this.button9);
+            this.panel1.Controls.Add(this.butt_run);
             this.panel1.Controls.Add(this.butt_paste);
             this.panel1.Controls.Add(this.butt_cut);
             this.panel1.Controls.Add(this.butt_copy);
@@ -139,15 +139,16 @@
             this.butt_help.UseVisualStyleBackColor = true;
             this.butt_help.Click += new System.EventHandler(this.butt_help_Click);
             // 
-            // button9
+            // butt_run
             // 
-            this.button9.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button9.BackgroundImage")));
-            this.button9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.button9.Location = new System.Drawing.Point(537, 32);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(42, 33);
-            this.button9.TabIndex = 10;
-            this.button9.UseVisualStyleBackColor = true;
+            this.butt_run.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_run.BackgroundImage")));
+            this.butt_run.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.butt_run.Location = new System.Drawing.Point(537, 32);
+            this.butt_run.Name = "butt_run";
+            this.butt_run.Size = new System.Drawing.Size(42, 33);
+            this.butt_run.TabIndex = 10;
+            this.butt_run.UseVisualStyleBackColor = true;
+            this.butt_run.Click += new System.EventHandler(this.butt_run_Click);
             // 
             // butt_paste
             // 
@@ -244,8 +245,7 @@
             this.открытьФайлToolStripMenuItem,
             this.сохранитьФайлToolStripMenuItem,
             this.запуститьСкриптToolStripMenuItem,
-            this.готовыеЗапросыToolStripMenuItem,
-            this.OutputTSM,
+            this.RunTSM,
             this.справкаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -269,35 +269,35 @@
             // createTSM
             // 
             this.createTSM.Name = "createTSM";
-            this.createTSM.Size = new System.Drawing.Size(201, 26);
+            this.createTSM.Size = new System.Drawing.Size(224, 26);
             this.createTSM.Text = "Создать ";
             this.createTSM.Click += new System.EventHandler(this.createTSM_Click);
             // 
             // openTSM
             // 
             this.openTSM.Name = "openTSM";
-            this.openTSM.Size = new System.Drawing.Size(201, 26);
+            this.openTSM.Size = new System.Drawing.Size(224, 26);
             this.openTSM.Text = "Открыть";
             this.openTSM.Click += new System.EventHandler(this.openTSM_Click);
             // 
             // saveTSM
             // 
             this.saveTSM.Name = "saveTSM";
-            this.saveTSM.Size = new System.Drawing.Size(201, 26);
+            this.saveTSM.Size = new System.Drawing.Size(224, 26);
             this.saveTSM.Text = "Сохранить";
             this.saveTSM.Click += new System.EventHandler(this.saveTSM_Click);
             // 
             // SaveAsTSM
             // 
             this.SaveAsTSM.Name = "SaveAsTSM";
-            this.SaveAsTSM.Size = new System.Drawing.Size(201, 26);
+            this.SaveAsTSM.Size = new System.Drawing.Size(224, 26);
             this.SaveAsTSM.Text = "Сохранить как...";
             this.SaveAsTSM.Click += new System.EventHandler(this.SaveAsTSM_Click);
             // 
             // Output
             // 
             this.Output.Name = "Output";
-            this.Output.Size = new System.Drawing.Size(201, 26);
+            this.Output.Size = new System.Drawing.Size(224, 26);
             this.Output.Text = "Выход";
             this.Output.Click += new System.EventHandler(this.Output_Click);
             // 
@@ -422,23 +422,13 @@
             this.исходныйКодПрограммыToolStripMenuItem.Size = new System.Drawing.Size(288, 26);
             this.исходныйКодПрограммыToolStripMenuItem.Text = "Исходный код программы";
             // 
-            // готовыеЗапросыToolStripMenuItem
+            // RunTSM
             // 
-            this.готовыеЗапросыToolStripMenuItem.BackColor = System.Drawing.Color.Transparent;
-            this.готовыеЗапросыToolStripMenuItem.Name = "готовыеЗапросыToolStripMenuItem";
-            this.готовыеЗапросыToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
-            this.готовыеЗапросыToolStripMenuItem.Text = "Пуск";
-            // 
-            // OutputTSM
-            // 
-            this.OutputTSM.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.OutputTSM.BackColor = System.Drawing.Color.Transparent;
-            this.OutputTSM.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("OutputTSM.BackgroundImage")));
-            this.OutputTSM.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.OutputTSM.Name = "OutputTSM";
-            this.OutputTSM.Size = new System.Drawing.Size(39, 24);
-            this.OutputTSM.Text = "    ";
-            this.OutputTSM.Click += new System.EventHandler(this.OutputTSM_Click);
+            this.RunTSM.BackColor = System.Drawing.Color.Transparent;
+            this.RunTSM.Name = "RunTSM";
+            this.RunTSM.Size = new System.Drawing.Size(55, 24);
+            this.RunTSM.Text = "Пуск";
+            this.RunTSM.Click += new System.EventHandler(this.RunTSM_Click);
             // 
             // справкаToolStripMenuItem
             // 
@@ -490,7 +480,16 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
@@ -559,8 +558,7 @@
         private System.Windows.Forms.ToolStripMenuItem открытьФайлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem сохранитьФайлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem запуститьСкриптToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem готовыеЗапросыToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem OutputTSM;
+        private System.Windows.Forms.ToolStripMenuItem RunTSM;
         private System.Windows.Forms.ToolStripMenuItem справкаToolStripMenuItem;
         private System.Windows.Forms.Button butt_paste;
         private System.Windows.Forms.Button butt_cut;
@@ -570,7 +568,7 @@
         private System.Windows.Forms.Button butt_save_file;
         private System.Windows.Forms.Button butt_open_file;
         private System.Windows.Forms.Button butt_new_file;
-        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button butt_run;
         private System.Windows.Forms.Button butt_help;
         private System.Windows.Forms.Button butt_about_program;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;

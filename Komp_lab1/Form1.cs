@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -21,32 +22,48 @@ namespace Komp_lab1
             correction = new Correction(richTextBox1);
             richTextBox1.VScroll += RichTextBox1_VScroll;
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
-            OutputTSM.Visible = false;
             LineNumbers();
+            DGInit();
+        }
+        private void DGInit() 
+        {
+            DataGridViewColumn[] columns = new DataGridViewColumn[]
+            {
+                new DataGridViewTextBoxColumn
+                {
+                    Name = "ConditionalCode",
+                    HeaderText = "Условный код"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    Name = "TypeToken",
+                    HeaderText = "Тип лексемы"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    Name = "lexeme",
+                    HeaderText = "Лексемы"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    Name = "location",
+                    HeaderText = "Местоположение"
+                }
+            };
+            dataGridView1.Columns.AddRange(columns);
         }
         private void LineNumbers()
         {
             try
             {
-                Point pt = new Point(0, 0);
-
-                int firstIndex = richTextBox1.GetCharIndexFromPosition(pt);
-                int firstLine = richTextBox1.GetLineFromCharIndex(firstIndex);
-                pt.X = ClientRectangle.Width;
-                pt.Y = ClientRectangle.Height;
-
-                int lastIndex = richTextBox1.GetCharIndexFromPosition(pt);
-                int lastLine = richTextBox1.GetLineFromCharIndex(lastIndex);
-
-                richTextBox2.Text = "";
+                richTextBox2.Clear();
+                int lineCount = richTextBox1.Lines.Length;
                 richTextBox2.SelectionAlignment = HorizontalAlignment.Center;
 
-                for (int i = firstLine; i <= lastLine + 1; i++)
+                for (int i = 0; i < lineCount; i++)
                 {
-                    richTextBox2.Text += (i + 1).ToString() + "\n";
+                    richTextBox2.AppendText((i + 1).ToString() + "\n");
                 }
-
-
 
             }
             catch (Exception ex)
@@ -56,60 +73,50 @@ namespace Komp_lab1
         }
         private void RichTextBox1_VScroll(object sender, EventArgs e)
         {
-            LineNumbers();
+            richTextBox2.SelectionStart = richTextBox1.GetCharIndexFromPosition(new Point(0, 0));
+            richTextBox2.ScrollToCaret();
         }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
             LineNumbers();
         }
-        private void CheckingForChanges(object sender, EventArgs e) 
+        private bool CheckingForChanges()
         {
             if (IsFileContentChanged())
             {
-                filesave = true;
-            }
-
-            if (filesave)
-            {
-                string message, caption = "";
+                string message;
                 bool a = false;
+
                 if (!(filename == null || filename == ""))
                 {
-                    message = string.Format("Файл не сохранен. Вы хотите сохранить изменения в {0}", filename);
+                    message = $"Файл не сохранен. Вы хотите сохранить изменения в {filename}?";
                     a = true;
                 }
                 else
                 {
                     message = "Файл не сохранен. Сохранить?";
-                    a = false;
                 }
 
-                DialogResult result = MessageBox.Show(message, caption,
-                                          MessageBoxButtons.YesNoCancel,
-                                          MessageBoxIcon.Question,
-                                          MessageBoxDefaultButton.Button1);
+                DialogResult result = MessageBox.Show(
+                    message,
+                    "Сохранение",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
 
-                switch (result)
+                if (result == DialogResult.Yes)
                 {
-                    case DialogResult.Yes:
-                        if (a)
-                            saveTSM_Click(sender, e);
-                        else
-                            butt_save_file_Click(sender, e);
-                        Application.Exit();
-                        break;
-                    case DialogResult.No:
-                        Application.Exit();
-                        break;
-                    case DialogResult.Cancel:
-                        break;
+                    if (a)
+                        saveTSM_Click(null, null);
+                    else
+                        butt_save_file_Click(null, null);
                 }
+
+                if (result == DialogResult.Cancel)
+                    return false;
             }
-            else
-            {
-                Application.Exit();
-            }
+
+            return true;
         }
         private bool IsFileContentChanged() 
         {
@@ -131,14 +138,6 @@ namespace Komp_lab1
                 return true;
             }
         }
-
-
-
-
-
-
-
-
         private void butt_new_file_Click(object sender, EventArgs e)
         {
             label1.Text = "";
@@ -204,7 +203,6 @@ namespace Komp_lab1
             AboutProgram_Click(sender, e);
         }
 
-
         private void butt_cancel_Click(object sender, EventArgs e)
         {
             correction.Cancel();
@@ -261,21 +259,117 @@ namespace Komp_lab1
         {
             correction.Select_all();
         }
-
-        private void OutputTSM_Click(object sender, EventArgs e)
+         private void Output_Click(object sender, EventArgs e)
         {
-            CheckingForChanges(sender, e);
-        }
-
-        private void Output_Click(object sender, EventArgs e)
-        {
-            CheckingForChanges(sender, e);
+            Close();
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CheckingForChanges(sender, e);
+            if (!CheckingForChanges())
+                e.Cancel = true;
         }
 
-        
+
+
+
+
+
+        private string GetTokenTypeString(TokenType type) 
+        {
+            switch (type)
+            {
+                case TokenType.Keyword:
+                    return "Ключевое слово";
+                case TokenType.Identifier:
+                    return "Идентификатор";
+                case TokenType.Variable:
+                    return "Переменная";
+                case TokenType.Separator:
+                    return "Разделитель";
+                case TokenType.Whitespace:
+                    return "Разделитель (пробел)";
+                case TokenType.Unknown:
+                    return "Неизвестный";
+                case TokenType.EndOfFile:
+                    return "Конец файла";
+                default:
+                    return type.ToString();
+            }
+        }
+        private int GetTokenCode(TokenType type, string value = "")
+        {
+            switch (type)
+            {
+                case TokenType.Keyword:
+                    return 2; 
+                case TokenType.Identifier:
+                    return 3;
+                case TokenType.Variable:
+                    return 5;
+                case TokenType.Separator:
+                    if (value == ";") return 6;
+                    if (value == "{") return 4;
+                    if (value == "}") return 7;
+                    return 0;
+                case TokenType.Whitespace:
+                    return 1;
+                case TokenType.Unknown:
+                    return 0;
+                default:
+                    return 0;
+            }
+        }
+        private void RunLexicalAnalyzer()
+        {
+            try
+            {
+                string inputText = richTextBox1.Text;
+
+                if (string.IsNullOrWhiteSpace(inputText))
+                {
+                    MessageBox.Show("Введите текст для анализа!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                LexicalAnalyzer analyzer = new LexicalAnalyzer(inputText);
+                List<Token> tokens = analyzer.Analize();
+                dataGridView1.Rows.Clear();
+
+                foreach (Token token in tokens)
+                {
+                    string tokenType = GetTokenTypeString(token.Type);
+                    int tokenCode = GetTokenCode(token.Type, token.Value);
+                    string location = Position(token.Position, token.Value, token.Line);
+                    dataGridView1.Rows.Add(tokenCode,tokenType, token.Value, location );
+                }
+                label1.Text = $"Найдено токенов: {tokens.Count}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при лексическом анализе: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private string Position(int pos, string value, int line) 
+        {
+            int val = value.Length;
+            if (value == "(пробел)")
+                val = 0;
+            if (pos == 0)
+                pos = 1;
+            if (val == 1)
+                val = 0;
+
+            string str = $"строка {line}, {pos}-{pos + val}";
+            return str;
+        }
+        private void butt_run_Click(object sender, EventArgs e)
+        {
+            RunLexicalAnalyzer();
+        }
+
+        private void RunTSM_Click(object sender, EventArgs e)
+        {
+            RunLexicalAnalyzer();
+        }
     }
 }
