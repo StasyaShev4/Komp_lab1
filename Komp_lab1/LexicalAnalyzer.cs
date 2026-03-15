@@ -13,11 +13,19 @@ namespace Komp_lab1
         private int position = 0;
         private int line = 1;
 
+        private readonly HashSet<char> operators = new HashSet<char>
+        {
+            '='
+        };
+        private readonly HashSet<string> booleanLiterals = new HashSet<string>
+        {
+            "true", "false"
+        };
         private readonly HashSet<string> keywords = new HashSet<string> {
             "string", "int", "bool", "array", "float", "struct"
         };
         private readonly HashSet<string> separators = new HashSet<string> {
-            "{", "}", ";"
+            "{", "}", ";", ",", "[" , "]"
         };
         public LexicalAnalyzer(string text) 
         {
@@ -55,9 +63,19 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
+                if (c == '\'')
+                {
+                    tokens.Add(ReadString());
+                    continue;
+                }
                 if (IsLatinLetter(c) || c == '_')
                 {
                     tokens.Add(ReadIndentifier());
+                    continue;
+                }
+                if (char.IsDigit(c))
+                {
+                    tokens.Add(ReadNumber());
                     continue;
                 }
                 if (c == '$') 
@@ -71,7 +89,11 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
-
+                if (operators.Contains(c))
+                {
+                    tokens.Add(new Token(TokenType.Operator, c.ToString(), position++, line));
+                    continue;
+                }
                 tokens.Add(Unknown());
                 
             }
@@ -119,8 +141,47 @@ namespace Komp_lab1
 
             if (keywords.Contains(word))
                 return new Token(TokenType.Keyword, word, start, startLP);
+            if (booleanLiterals.Contains(word))
+                return new Token(TokenType.BooleanLiteral, word, start, line);
 
             return new Token(TokenType.Identifier, word, start, startLP);
+        }
+        Token ReadNumber() 
+        {
+            int start = position;
+            bool isFloat = false;
+
+            while (position < input.Length &&
+                  (char.IsDigit(input[position]) || input[position] == '.'))
+            {
+                if (input[position] == '.')
+                    isFloat = true;
+
+                position++;
+            }
+
+            string number = input.Substring(start, position - start);
+
+            if (isFloat)
+                return new Token(TokenType.FloatLiteral, number, start, line);
+
+            return new Token(TokenType.IntegerLiteral, number, start, line);
+        }
+        Token ReadString() 
+        {
+            int start = position;
+            position++;
+
+            while (position < input.Length && input[position] != '\'')
+            {
+                position++;
+            }
+
+            position++;
+
+            string str = input.Substring(start, position - start);
+
+            return new Token(TokenType.StringLiteral, str, start, line);
         }
         private bool IsLatinLetter(char c)
         {

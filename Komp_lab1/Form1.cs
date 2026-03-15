@@ -323,6 +323,8 @@ namespace Komp_lab1
                     return "Идентификатор";
                 case TokenType.Variable:
                     return "Переменная";
+                case TokenType.Operator:
+                    return "Оператор";
                 case TokenType.Separator:
                     return "Разделитель";
                 case TokenType.Whitespace:
@@ -345,11 +347,23 @@ namespace Komp_lab1
                     return 3;
                 case TokenType.Variable:
                     return 5;
+                case TokenType.Operator:
+                    return 8;
                 case TokenType.Separator:
                     if (value == ";") return 6;
                     if (value == "{") return 4;
                     if (value == "}") return 7;
+                    if (value == "[") return 12;
+                    if (value == "]") return 13;
+                    if (value == ",") return 14;
+                    //if (value == "'") return 11;
                     return 0;
+                case TokenType.FloatLiteral: 
+                    return 10;
+                case TokenType.StringLiteral: 
+                    return 14;
+                case TokenType.IntegerLiteral: 
+                    return 9;
                 case TokenType.Unknown:
                     return 0;
                 default:
