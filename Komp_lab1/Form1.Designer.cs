@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.butt_about_program = new System.Windows.Forms.Button();
@@ -77,6 +77,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -269,35 +270,35 @@
             // createTSM
             // 
             this.createTSM.Name = "createTSM";
-            this.createTSM.Size = new System.Drawing.Size(224, 26);
+            this.createTSM.Size = new System.Drawing.Size(201, 26);
             this.createTSM.Text = "Создать ";
             this.createTSM.Click += new System.EventHandler(this.createTSM_Click);
             // 
             // openTSM
             // 
             this.openTSM.Name = "openTSM";
-            this.openTSM.Size = new System.Drawing.Size(224, 26);
+            this.openTSM.Size = new System.Drawing.Size(201, 26);
             this.openTSM.Text = "Открыть";
             this.openTSM.Click += new System.EventHandler(this.openTSM_Click);
             // 
             // saveTSM
             // 
             this.saveTSM.Name = "saveTSM";
-            this.saveTSM.Size = new System.Drawing.Size(224, 26);
+            this.saveTSM.Size = new System.Drawing.Size(201, 26);
             this.saveTSM.Text = "Сохранить";
             this.saveTSM.Click += new System.EventHandler(this.saveTSM_Click);
             // 
             // SaveAsTSM
             // 
             this.SaveAsTSM.Name = "SaveAsTSM";
-            this.SaveAsTSM.Size = new System.Drawing.Size(224, 26);
+            this.SaveAsTSM.Size = new System.Drawing.Size(201, 26);
             this.SaveAsTSM.Text = "Сохранить как...";
             this.SaveAsTSM.Click += new System.EventHandler(this.SaveAsTSM_Click);
             // 
             // Output
             // 
             this.Output.Name = "Output";
-            this.Output.Size = new System.Drawing.Size(224, 26);
+            this.Output.Size = new System.Drawing.Size(201, 26);
             this.Output.Text = "Выход";
             this.Output.Click += new System.EventHandler(this.Output_Click);
             // 
@@ -442,14 +443,14 @@
             // CallingHelp
             // 
             this.CallingHelp.Name = "CallingHelp";
-            this.CallingHelp.Size = new System.Drawing.Size(224, 26);
+            this.CallingHelp.Size = new System.Drawing.Size(197, 26);
             this.CallingHelp.Text = "Вызов справки";
             this.CallingHelp.Click += new System.EventHandler(this.CallingHelp_Click);
             // 
             // AboutProgram
             // 
             this.AboutProgram.Name = "AboutProgram";
-            this.AboutProgram.Size = new System.Drawing.Size(224, 26);
+            this.AboutProgram.Size = new System.Drawing.Size(197, 26);
             this.AboutProgram.Text = "О программе";
             this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
             // 
@@ -482,22 +483,22 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 22);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(882, 184);
+            this.dataGridView1.Size = new System.Drawing.Size(882, 162);
             this.dataGridView1.TabIndex = 0;
             // 
             // openFileDialog1
@@ -520,10 +521,20 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Size = new System.Drawing.Size(882, 457);
             this.splitContainer1.SplitterDistance = 269;
             this.splitContainer1.TabIndex = 14;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 16);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "label2";
             // 
             // Form1
             // 
@@ -543,6 +554,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -598,6 +610,7 @@
         private System.Windows.Forms.ToolStripMenuItem AboutProgram;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

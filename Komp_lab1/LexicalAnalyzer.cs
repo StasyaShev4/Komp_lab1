@@ -25,7 +25,7 @@ namespace Komp_lab1
             "string", "int", "bool", "array", "float", "struct"
         };
         private readonly HashSet<string> separators = new HashSet<string> {
-            "{", "}", ";", "[" , "]"
+            "{", "}", ";", "[" , "]", "\"", 
         };
         public LexicalAnalyzer(string text) 
         {

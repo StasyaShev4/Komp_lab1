@@ -39,27 +39,49 @@ namespace Komp_lab1
             {
                 new DataGridViewTextBoxColumn
                 {
-                    Name = "ConditionalCode",
-                    HeaderText = "Условный код"
+                    Name = "Fragment",
+                    HeaderText = "Неверный фрагмент"
                 },
                 new DataGridViewTextBoxColumn
                 {
-                    Name = "TypeToken",
-                    HeaderText = "Тип лексемы"
-                },
-                new DataGridViewTextBoxColumn
-                {
-                    Name = "lexeme",
-                    HeaderText = "Лексемы"
-                },
-                new DataGridViewTextBoxColumn
-                {
-                    Name = "location",
+                    Name = "Location",
                     HeaderText = "Местоположение"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    Name = "Message",
+                    HeaderText = "Описание"
                 }
             };
+
+            dataGridView1.Columns.Clear();
             dataGridView1.Columns.AddRange(columns);
-            dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
+
+            //DataGridViewColumn[] columns = new DataGridViewColumn[]
+            //{
+            //    new DataGridViewTextBoxColumn
+            //    {
+            //        Name = "ConditionalCode",
+            //        HeaderText = "Условный код"
+            //    },
+            //    new DataGridViewTextBoxColumn
+            //    {
+            //        Name = "TypeToken",
+            //        HeaderText = "Тип лексемы"
+            //    },
+            //    new DataGridViewTextBoxColumn
+            //    {
+            //        Name = "lexeme",
+            //        HeaderText = "Лексемы"
+            //    },
+            //    new DataGridViewTextBoxColumn
+            //    {
+            //        Name = "location",
+            //        HeaderText = "Местоположение"
+            //    }
+            //};
+            //dataGridView1.Columns.AddRange(columns);
+            //dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
         }
         private void LineNumbers()
         {
@@ -105,17 +127,25 @@ namespace Komp_lab1
             if (e.RowIndex < 0) return;
 
             var row = dataGridView1.Rows[e.RowIndex];
-            Token token = row.Tag as Token;
 
-            if (token == null) return;
+            if (row.Tag is SyntaxError err)
+            {
+                richTextBox1.Focus();
+                richTextBox1.SelectionStart = err.Position;
+                richTextBox1.SelectionLength = err.Fragment.Length;
+                richTextBox1.ScrollToCaret();
+            }
+            //Token token = row.Tag as Token;
 
-            int pos = token.Position;
-            int length = token.Value.Length;
+            //if (token == null) return;
 
-            richTextBox1.Focus();
-            richTextBox1.SelectionStart = pos;
-            richTextBox1.SelectionLength = length;
-            richTextBox1.ScrollToCaret();
+            //int pos = token.Position;
+            //int length = token.Value.Length;
+
+            //richTextBox1.Focus();
+            //richTextBox1.SelectionStart = pos;
+            //richTextBox1.SelectionLength = length;
+            //richTextBox1.ScrollToCaret();
         }
 
 
@@ -390,23 +420,50 @@ namespace Komp_lab1
                 List<Token> tokens = analyzer.Analize();
                 dataGridView1.Rows.Clear();
 
-                foreach (Token token in tokens)
-                {
-                    string tokenType = GetTokenTypeString(token.Type);
-                    int tokenCode = GetTokenCode(token.Type, token.Value);
-                    string location = Position(token.Position, token.Value, token.Line);
-                    //dataGridView1.Rows.Add(tokenCode,tokenType, token.Value, location );
-                    int rowIndex = dataGridView1.Rows.Add(tokenCode, tokenType, token.Value, location);
-                    dataGridView1.Rows[rowIndex].Tag = token;
+                Parser parser = new Parser(tokens);
+                parser.Parse();
 
-                    if (token.Type == TokenType.Unknown)
-                    {
-                        richTextBox1.SelectionStart = token.Position;
-                        richTextBox1.SelectionLength = token.Value.Length;
-                        richTextBox1.SelectionColor = Color.Red;
-                        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
-                    }
+                dataGridView1.Rows.Clear();
+
+                if (parser.Errors.Count == 0)
+                    label2.Text = "Проблемы не нейдены.";
+                else
+                {
+                    
                 }
+                
+
+                foreach (var err in parser.Errors)
+                {
+                    int rowIndex = dataGridView1.Rows.Add(
+                        err.Fragment,
+                        $"строка {err.Line}, позиция {err.Position + 1}",
+                        err.Message
+                    );
+
+                    dataGridView1.Rows[rowIndex].Tag = err;
+
+                    dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightPink;
+                }
+                label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
+
+                //foreach (Token token in tokens)
+                //{
+                //    string tokenType = GetTokenTypeString(token.Type);
+                //    int tokenCode = GetTokenCode(token.Type, token.Value);
+                //    string location = Position(token.Position, token.Value, token.Line);
+                //    //dataGridView1.Rows.Add(tokenCode,tokenType, token.Value, location );
+                //    int rowIndex = dataGridView1.Rows.Add(tokenCode, tokenType, token.Value, location);
+                //    dataGridView1.Rows[rowIndex].Tag = token;
+
+                //    if (token.Type == TokenType.Unknown)
+                //    {
+                //        richTextBox1.SelectionStart = token.Position;
+                //        richTextBox1.SelectionLength = token.Value.Length;
+                //        richTextBox1.SelectionColor = Color.Red;
+                //        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
+                //    }
+                //}
                 label1.Text = $"Найдено токенов: {tokens.Count}";
             }
             catch (Exception ex)
