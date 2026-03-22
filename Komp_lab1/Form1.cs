@@ -405,7 +405,7 @@ namespace Komp_lab1
             richTextBox1.SelectAll();
             richTextBox1.SelectionColor = Color.Black;
             richTextBox1.DeselectAll();
-
+            dataGridView1.Rows.Clear();
             try
             {
                 string inputText = richTextBox1.Text;

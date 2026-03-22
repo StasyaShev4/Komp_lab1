@@ -12,18 +12,6 @@ namespace Komp_lab1
         public string Message;
         public int Line;
         public int Position;
-
-        //struct A
-        //{
-        //    int a;
-        //    float b = .123;
-        //    string name;
-        //    bool c = tru;
-        //    array arr = [1, , 3];
-        //}
-
-
-
     }
     internal class Parser
     {
@@ -162,15 +150,26 @@ namespace Komp_lab1
 
             if (Match(TokenType.Operator, "="))
             {
+                int beforePos = position;
                 ParseDefault(currentType);
-            }
 
-            if (!Match(TokenType.Separator, ";"))
-            {
-                Error("Ожидался ';'");
-                Synchronize();
+                if (beforePos == position)
+                {
+                    while (Current != null &&
+                           !(Current.Type == TokenType.Separator &&
+                             (Current.Value == ";" || Current.Value == "}")))
+                    {
+                        Next();
+                    }
+                    //ParseDefault(currentType);
+                }
+
+                if (!Match(TokenType.Separator, ";"))
+                {
+                    Error("Ожидался ';'");
+                }
+
             }
-                
         }
         private void ParseValue(string expectedType)
         {
@@ -179,7 +178,10 @@ namespace Komp_lab1
             {
                 case "int":
                     if (!Match(TokenType.IntegerLiteral))
+                    {
                         Error("Ожидалось целое число");
+                        Next();
+                    }
                     break;
 
                 case "float":
@@ -191,19 +193,29 @@ namespace Komp_lab1
                             Next();
                             return;
                         }
+                        Next();
                     }
                     else
+                    {
                         Error("Ожидалось вещественное число");
+                        Next();
+                    }
                     break;
 
                 case "string":
                     if (!Match(TokenType.StringLiteral))
+                    {
                         Error("Ожидалась строка");
+                        Next();
+                    }
                     break;
 
                 case "bool":
-                    if (!Match(TokenType.BooleanLiteral))
+                    if (!Match(TokenType.BooleanLiteral)) 
+                    { 
                         Error("Ожидалось true или false");
+                        Next();
+                    }
                     break;
 
                 case "array":
@@ -214,25 +226,6 @@ namespace Komp_lab1
                     Error("Неизвестный тип");
                     break;
             }
-
-            //if (Current.Type == TokenType.FloatLiteral)
-            //{
-            //    if (Current.Value.StartsWith("."))
-            //    {
-            //        Error("Ожидалась цифра перед десятичной точкой");
-            //    }
-            //    Next();
-            //    return;
-            //}
-
-            //if (Match(TokenType.IntegerLiteral) ||
-            //    Match(TokenType.FloatLiteral) ||
-            //    Match(TokenType.StringLiteral) ||
-            //    Match(TokenType.BooleanLiteral))
-            //{
-            //    return;
-            //}
-            //Error("Ожидалось значение");
         }
         private void ParseArray(string elementType)
         {
@@ -242,19 +235,33 @@ namespace Komp_lab1
                 return;
             }
 
-            if (Current.Value != "]")
-            {
-                ParseValue(elementType);
+            SkipWhitespace();
 
-                while (Match(TokenType.Separator, ","))
+            if (Current != null && Current.Value == "]")
+            {
+                Match(TokenType.Separator, "]");
+                return;
+            }
+
+            ParseValue(elementType);
+
+            while (Current != null && Current.Type == TokenType.Separator && Current.Value == ",")
+            {
+                Next();
+                SkipWhitespace();
+                if (Current != null && Current.Value == "]")
                 {
-                    if (Current != null && Current.Value == "]")
-                    {
-                        Error("Ожидалось значение после ','");
-                        break ;
-                    }
-                    ParseValue(elementType);
+                    Error("Ожидалось значение после ','");
+                    break;
                 }
+                //if (!Match(TokenType.Separator, ","))
+                //{
+                //    Error("Ожидалась ',' между элементами массива");
+                //    break;
+                //}
+                //SkipWhitespace();                
+                //ParseValue(elementType);
+                
             }
 
             if (!Match(TokenType.Separator, "]"))
@@ -264,16 +271,14 @@ namespace Komp_lab1
         }
         private void ParseDefault(string type)
         {
-            //if (!Match(TokenType.Operator, "="))
-            //{
-            //    Error("Ожидался '='");
-            //    return;
-            //}
-
-            if (Current.Value == "[")
+            if (Match(TokenType.Separator, "["))
+            {
                 ParseArray(type);
+            }
             else
+            {
                 ParseValue(type);
+            }            
         }
         private void Error(string message)
         {
