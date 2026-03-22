@@ -12,6 +12,18 @@ namespace Komp_lab1
         public string Message;
         public int Line;
         public int Position;
+
+        //struct A
+        //{
+        //    int a;
+        //    float b = .123;
+        //    string name;
+        //    bool c = tru;
+        //    array arr = [1, , 3];
+        //}
+
+
+
     }
     internal class Parser
     {
@@ -29,7 +41,13 @@ namespace Komp_lab1
         {
             while (Current != null)
             {
+                int startPos = position;
                 ParseStruct();
+                if (position == startPos)
+                {
+                    Error("Неожиданный токен");
+                    Next();
+                }
             }
         }
         private void Next() 
@@ -58,26 +76,27 @@ namespace Komp_lab1
         {
             while (Current != null)
             {
-                if (Current.Value == ";" || Current.Value == "}")
+                if (Current.Type == TokenType.Separator && (Current.Value == ";" || Current.Value == "}"))
                 {
                     Next();
+                    break;
+                }
+                if (Current.Type == TokenType.Keyword &&
+                   (Current.Value == "int" ||
+                    Current.Value == "float" ||
+                    Current.Value == "string" ||
+                    Current.Value == "bool" ||
+                    Current.Value == "array"))
+                {
+                    return;
+                }
+                if (Current.Type == TokenType.Separator && Current.Value == "}")
+                {
                     return;
                 }
                 Next();
             }
         }
-        private void Error(string message)
-        {
-            Errors.Add(new SyntaxError
-            {
-                Fragment = Current?.Value ?? "EOF", 
-                Message = message,
-                Line = Current?.Line ?? 0,
-                Position = Current?.Position ?? 0
-            });
-        }
-
-        //Token Current => tokens[position];
         private void ParseFields()
         {
             while (Current != null &&
@@ -120,23 +139,30 @@ namespace Komp_lab1
 
         private void ParseField()
         {
-            if (!(Match(TokenType.Keyword, "string") ||
-                  Match(TokenType.Keyword, "int") ||
-                  Match(TokenType.Keyword, "float") ||
-                  Match(TokenType.Keyword, "bool") ||
-                  Match(TokenType.Keyword, "array")))
+            string currentType = null;
+
+            if (Match(TokenType.Keyword, "string")) currentType = "string";
+            else if (Match(TokenType.Keyword, "int")) currentType = "int";
+            else if (Match(TokenType.Keyword, "float")) currentType = "float";
+            else if (Match(TokenType.Keyword, "bool")) currentType = "bool";
+            else if (Match(TokenType.Keyword, "array")) currentType = "array";
+            else
             {
                 Error("Ожидался тип");
+                Synchronize();
+                return;
             }
 
             if (!Match(TokenType.Variable))
             {
                 Error("Ожидалась переменная вида $name");
+                Synchronize();
+                return;
             }
 
-            if (Current != null && Current.Value == "=")
+            if (Match(TokenType.Operator, "="))
             {
-                ParseDefault();
+                ParseDefault(currentType);
             }
 
             if (!Match(TokenType.Separator, ";"))
@@ -144,29 +170,71 @@ namespace Komp_lab1
                 Error("Ожидался ';'");
                 Synchronize();
             }
+                
         }
-        private void ParseValue()
+        private void ParseValue(string expectedType)
         {
-            if (Current.Type == TokenType.FloatLiteral)
+            if (Current == null) return;
+            switch (expectedType)
             {
-                if (Current.Value.StartsWith("."))
-                {
-                    Error("Ожидалась цифра перед десятичной точкой");
-                }
-                Next();
-                return;
+                case "int":
+                    if (!Match(TokenType.IntegerLiteral))
+                        Error("Ожидалось целое число");
+                    break;
+
+                case "float":
+                    if (Current.Type == TokenType.FloatLiteral)
+                    {
+                        if (Current.Value.StartsWith("."))
+                        {
+                            Error("Ожидалась цифра перед точкой");
+                            Next();
+                            return;
+                        }
+                    }
+                    else
+                        Error("Ожидалось вещественное число");
+                    break;
+
+                case "string":
+                    if (!Match(TokenType.StringLiteral))
+                        Error("Ожидалась строка");
+                    break;
+
+                case "bool":
+                    if (!Match(TokenType.BooleanLiteral))
+                        Error("Ожидалось true или false");
+                    break;
+
+                case "array":
+                    ParseArray(expectedType);
+                    break;
+
+                default:
+                    Error("Неизвестный тип");
+                    break;
             }
 
-            if (Match(TokenType.IntegerLiteral) ||
-                Match(TokenType.FloatLiteral) ||
-                Match(TokenType.StringLiteral) ||
-                Match(TokenType.BooleanLiteral))
-            {
-                return;
-            }
-            Error("Ожидалось значение");
+            //if (Current.Type == TokenType.FloatLiteral)
+            //{
+            //    if (Current.Value.StartsWith("."))
+            //    {
+            //        Error("Ожидалась цифра перед десятичной точкой");
+            //    }
+            //    Next();
+            //    return;
+            //}
+
+            //if (Match(TokenType.IntegerLiteral) ||
+            //    Match(TokenType.FloatLiteral) ||
+            //    Match(TokenType.StringLiteral) ||
+            //    Match(TokenType.BooleanLiteral))
+            //{
+            //    return;
+            //}
+            //Error("Ожидалось значение");
         }
-        private void ParseArray()
+        private void ParseArray(string elementType)
         {
             if (!Match(TokenType.Separator, "["))
             {
@@ -176,11 +244,16 @@ namespace Komp_lab1
 
             if (Current.Value != "]")
             {
-                ParseValue();
+                ParseValue(elementType);
 
                 while (Match(TokenType.Separator, ","))
                 {
-                    ParseValue();
+                    if (Current != null && Current.Value == "]")
+                    {
+                        Error("Ожидалось значение после ','");
+                        break ;
+                    }
+                    ParseValue(elementType);
                 }
             }
 
@@ -189,18 +262,30 @@ namespace Komp_lab1
                 Error("Ожидалась ']'");
             }
         }
-        private void ParseDefault()
+        private void ParseDefault(string type)
         {
-            if (!Match(TokenType.Operator, "="))
-            {
-                Error("Ожидался '='");
-                return;
-            }
+            //if (!Match(TokenType.Operator, "="))
+            //{
+            //    Error("Ожидался '='");
+            //    return;
+            //}
 
             if (Current.Value == "[")
-                ParseArray();
+                ParseArray(type);
             else
-                ParseValue();
+                ParseValue(type);
+        }
+        private void Error(string message)
+        {
+            if (Current == null) return;
+
+            Errors.Add(new SyntaxError
+            {
+                Fragment = Current?.Value ?? "EOF",
+                Message = message,
+                Line = Current?.Line ?? 0,
+                Position = Current?.Position ?? 0
+            });
         }
     }
 }
