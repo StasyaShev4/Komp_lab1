@@ -15,7 +15,7 @@ namespace Komp_lab1
 
         private readonly HashSet<char> operators = new HashSet<char>
         {
-            '='
+            '=', '-'
         };
         private readonly HashSet<string> booleanLiterals = new HashSet<string>
         {
