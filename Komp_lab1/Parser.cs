@@ -117,10 +117,6 @@ namespace Komp_lab1
             {
                 Error("Ожидалась '}' перед концом файла");
                 Next();
-                //if (!Match(TokenType.Separator, ";"))
-                //{
-                //    Error("Ожидалась ';'");
-                //}
                 return;
             }
 
