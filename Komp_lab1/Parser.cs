@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Komp_lab1
 {
@@ -42,10 +43,45 @@ namespace Komp_lab1
         {
             position++;
         }
+        private void ParseStruct()
+        {
+            if (!Match(TokenType.Keyword, "struct"))
+            {
+                Error("Ожидалось 'struct'");
+            }
 
+            if (!Match(TokenType.Identifier))
+            {
+                Error("Ожидалось имя структуры");
+            }
+
+            if (!Match(TokenType.Separator, "{"))
+            {
+                Error("Ожидалась '{'");
+                Synchronize();
+            }
+            if (Current != null
+                && Current.Type != TokenType.Whitespace
+                && !(Current.Type == TokenType.Separator && Current.Value == "}"))
+            {
+                //MessageBox.Show("Зашли в тело структуры");
+                ParseFields();
+            }
+            if (!Match(TokenType.Separator, "}"))
+            {
+                Error("Ожидалась '}'");
+                Synchronize();
+            }
+            if (!Match(TokenType.Separator, ";"))
+            {
+                Error("Ожидалась ';' после определения структуры");
+            }
+        }
         private bool Match(TokenType type, string value = null)
         {
             SkipWhitespace();
+            string inputType = null;
+            inputType = Current.Value;
             if (Current == null) return false;
             if (Current.Type == type && (value == null || Current.Value == value))
             {
@@ -59,7 +95,6 @@ namespace Komp_lab1
             while (Current != null && Current.Type == TokenType.Whitespace)
                 Next();
         }
-
         private void Synchronize()
         {
             while (Current != null)
@@ -93,88 +128,67 @@ namespace Komp_lab1
                 ParseField();
             }
         }
-        private void ParseStruct()
-        {
-            if (!Match(TokenType.Keyword, "struct"))
-            {
-                Error("Ожидалось 'struct'");
-                Synchronize();
-                return;
-            }
 
-            if (!Match(TokenType.Identifier))
-            {
-                Error("Ожидалось имя структуры");
-            }
-
-            if (!Match(TokenType.Separator, "{"))
-            {
-                Error("Ожидалась '{'");
-            }
-
-            ParseFields();
-            if (Current == null)
-            {
-                Error("Ожидалась '}' перед концом файла");
-                Next();
-                return;
-            }
-
-            if (!Match(TokenType.Separator, "}"))
-            {
-                Error("Ожидалась '}'");
-                Synchronize();
-            }
-            if (!Match(TokenType.Separator, ";"))
-            {
-                Error("Ожидалась ';'");
-            }
-
-        }
 
         private void ParseField()
         {
             string currentType = null;
-
-            if (Match(TokenType.Keyword, "string")) currentType = "string";
-            else if (Match(TokenType.Keyword, "int")) currentType = "int";
-            else if (Match(TokenType.Keyword, "float")) currentType = "float";
-            else if (Match(TokenType.Keyword, "bool")) currentType = "bool";
-            else if (Match(TokenType.Keyword, "array")) currentType = "array";
-            else
+            string inputType = Current.Value;
+            switch (inputType)
+            {
+                case "string":
+                    currentType = "string";
+                    break;
+                case "int":
+                    currentType = "int";
+                    break;
+                case "float":
+                    currentType = "float";
+                    break;
+                case "bool":
+                    currentType = "bool";
+                    break;
+                case "array":
+                    currentType = "array";
+                    break;
+                default:
+                    currentType = null;
+                    break;
+            }
+            if (currentType == null)
             {
                 Error("Ожидался тип");
                 Synchronize();
-                return;
             }
-
-            if (!Match(TokenType.Variable))
+            else 
+            {
+                Next();
+                SkipWhitespace();
+            }
+            
+            if (Current == null || !Current.Value.StartsWith("$"))
             {
                 Error("Ожидалась переменная вида $name");
-                Synchronize();
-                return;
+                //Synchronize();
             }
+            if (Current.Value.Length <= 1)
+            {
+                Error("После $ должно быть имя переменной");
+            }
+            Next();
+            SkipWhitespace();
 
             if (Match(TokenType.Operator, "="))
             {
-                int beforePos = position;
-                ParseDefault(currentType);
-
-                if (beforePos == position)
-                {
-                    while (Current != null &&
-                           !(Current.Type == TokenType.Separator &&
-                             (Current.Value == ";" || Current.Value == "}")))
-                    {
-                        Next();
-                    }
-                    //ParseDefault(currentType);
-                }
+                MessageBox.Show("Зашли в значение по умолчанию");
+                //ParseDefault(currentType);
             }
+            inputType = null;
+            inputType = Current.Value;
             if (!Match(TokenType.Separator, ";"))
             {
                 Error("Ожидался ';'");
-                return;
+                Synchronize();
             }
 
         }
@@ -290,6 +304,9 @@ namespace Komp_lab1
         }
         private void ParseDefault(string type)
         {
+            int beforePos = position;
+            //ParseDefault(currentType);
+
             SkipWhitespace();
             if (Current != null && Current.Value == "[")
             {
@@ -298,7 +315,18 @@ namespace Komp_lab1
             else
             {
                 ParseValue(type);
-            }            
+            }
+
+            if (beforePos == position)
+            {
+                while (Current != null &&
+                       !(Current.Type == TokenType.Separator &&
+                         (Current.Value == ";" || Current.Value == "}")))
+                {
+                    Next();
+                }
+                //ParseDefault(currentType);
+            }
         }
         private void Error(string message)
         {

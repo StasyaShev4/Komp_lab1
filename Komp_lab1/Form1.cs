@@ -447,7 +447,7 @@ namespace Komp_lab1
                 }
                 label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
 
-                //foreach (Token token in tokens)
+            //foreach (Token token in tokens)
                 //{
                 //    string tokenType = GetTokenTypeString(token.Type);
                 //    int tokenCode = GetTokenCode(token.Type, token.Value);
