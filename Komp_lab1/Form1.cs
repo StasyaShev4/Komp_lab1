@@ -427,7 +427,7 @@ namespace Komp_lab1
 
                 foreach (Token token in tokens)
                 {
-                    if (token.Type == TokenType.Whitespace)
+                    if (token.Type == TokenType.Whitespace || token.Type == TokenType.EndOfFile)
                         continue;
 
                     string tokenTypeDesc = GetTokenTypeString(token.Type);

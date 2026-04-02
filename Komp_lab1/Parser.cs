@@ -27,8 +27,23 @@ namespace Komp_lab1
         }
         private Token Current => tokens[Math.Min(position, tokens.Count - 1)];
 
+        public void RemoveWhitespaceTokens()
+        {
+            var newTokens = new List<Token>();
+            foreach (var token in tokens)
+            {
+                if (token.Type != TokenType.Whitespace)
+                {
+                    newTokens.Add(token);
+                }
+            }
+            tokens = newTokens;
+            position = 0;
+        }
+
         public void Parse()
         {
+            RemoveWhitespaceTokens();
             while (Current.Type != TokenType.EndOfFile)
             {
                 int startPos = position;
@@ -51,23 +66,27 @@ namespace Komp_lab1
             if (!Match(TokenType.Keyword, "struct"))
             {
                 Error("Ожидалось 'struct'");
+                Next();
+                if (Current.Type == TokenType.EndOfFile)
+                {
+                    return;
+                }
             }
+            
 
             if (!Match(TokenType.Identifier))
             {
                 Error("Ожидалось имя структуры");
             }
-
+           
             if (!Match(TokenType.Separator, "{"))
             {
                 Error("Ожидалась '{'");
                 Synchronize();
             }
-            SkipWhitespace();
             if (Current.Type != TokenType.EndOfFile && Current.Value != "}")
             {
                 ParseFields();
-                SkipWhitespace();
             }
             if (!Match(TokenType.Separator, "}"))
             {
@@ -81,7 +100,6 @@ namespace Komp_lab1
         }
         private bool Match(TokenType type, string value = null)
         {
-            SkipWhitespace();
             if (Current.Type == TokenType.EndOfFile) return false;
             if (Current.Type == type && (value == null || Current.Value == value))
             {
@@ -89,11 +107,6 @@ namespace Komp_lab1
                 return true;
             }
             return false;
-        }
-        private void SkipWhitespace()
-        {
-            while (Current.Type != TokenType.EndOfFile && Current.Type == TokenType.Whitespace)
-                Next();
         }
         private void Synchronize()
         {
@@ -126,19 +139,12 @@ namespace Komp_lab1
                    !(Current.Type == TokenType.Separator && Current.Value == "}"))
             {
                 ParseField();
-                SkipWhitespace();
             }
         }
 
 
         private void ParseField()
         {
-            if (Current.Type == TokenType.EndOfFile)
-            {
-                Error("Неожиданный конец файла");
-                return;
-            }
-
             string currentType = null;
             string inputType = Current.Value;
             switch (inputType)
@@ -165,27 +171,30 @@ namespace Komp_lab1
             if (currentType == null)
             {
                 Error("Ожидался тип");
+                Next();
+                if (Current.Type == TokenType.EndOfFile) 
+                {
+                    return;
+                }
             }
-            Next();
-            SkipWhitespace();
+            else { Next(); }
+            
 
             if (Current.Type == TokenType.EndOfFile || !Current.Value.StartsWith("$"))
             {
                 Error("Ожидалась переменная вида $name");
             }
-            if (Current.Value.Length <= 1)
+            if (Current.Value.StartsWith("$") && Current.Value.Length <= 1)
             {
                 Error("После $ должно быть имя переменной");
             }
             Next();
-            SkipWhitespace();
 
             if (Match(TokenType.Operator, "="))
             {
                 ParseDefault(currentType);
             }
             Next();
-            SkipWhitespace();
 
             if (!Match(TokenType.Separator, ";"))
             {
@@ -203,8 +212,6 @@ namespace Komp_lab1
 
             string aboba = null;
             int startPos = position;
-
-            SkipWhitespace();
 
             aboba = Current.Value;
             switch (type)
@@ -276,7 +283,6 @@ namespace Komp_lab1
             {
                 if (Match(TokenType.Separator, ","))
                 {
-                    SkipWhitespace();
                     ParseValue();
                 }
                 else
@@ -284,7 +290,6 @@ namespace Komp_lab1
                     Error("Ожидалось значение после ','");
                     Next();
                 }
-                SkipWhitespace();
                 aboba = null;
                 aboba = Current.Value;
                 if (aboba == "]")
@@ -342,7 +347,7 @@ namespace Komp_lab1
         {
             Errors.Add(new SyntaxError
             {
-                Fragment = Current?.Value ?? "EOF",
+                Fragment = Current?.Value ?? "EndOfFile",
                 Message = message,
                 Line = Current?.Line ?? 0,
                 Position = Current?.Position ?? 0

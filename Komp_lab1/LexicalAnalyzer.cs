@@ -97,7 +97,7 @@ namespace Komp_lab1
                 tokens.Add(Unknown());
                 
             }
-            tokens.Add(new Token(TokenType.EndOfFile, "EOF", position, line));
+            tokens.Add(new Token(TokenType.EndOfFile, "EndOfFile", position, line));
             return tokens;
         }
         Token Unknown() 
