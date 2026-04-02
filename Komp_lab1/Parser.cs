@@ -25,17 +25,19 @@ namespace Komp_lab1
         {
             this.tokens = tokens;
         }
-        private Token Current => position < tokens.Count ? tokens[position] : null;
+        private Token Current => tokens[Math.Min(position, tokens.Count - 1)];
 
         public void Parse()
         {
-            while (Current != null)
+            while (Current.Type != TokenType.EndOfFile)
             {
                 int startPos = position;
                 ParseStruct();
                 if (position == startPos)
                 {
                     Error("Неожиданный токен");
+                    if (Current.Type == TokenType.EndOfFile)
+                        break;
                     Next();
                 }
             }
@@ -62,7 +64,7 @@ namespace Komp_lab1
                 Synchronize();
             }
             SkipWhitespace();
-            if (Current.Value != "}")
+            if (Current.Type != TokenType.EndOfFile && Current.Value != "}")
             {
                 ParseFields();
                 SkipWhitespace();
@@ -80,7 +82,7 @@ namespace Komp_lab1
         private bool Match(TokenType type, string value = null)
         {
             SkipWhitespace();
-            if (Current == null) return false;
+            if (Current.Type == TokenType.EndOfFile) return false;
             if (Current.Type == type && (value == null || Current.Value == value))
             {
                 Next();
@@ -90,12 +92,12 @@ namespace Komp_lab1
         }
         private void SkipWhitespace()
         {
-            while (Current != null && Current.Type == TokenType.Whitespace)
+            while (Current.Type != TokenType.EndOfFile && Current.Type == TokenType.Whitespace)
                 Next();
         }
         private void Synchronize()
         {
-            while (Current != null)
+            while (Current.Type != TokenType.EndOfFile)
             {
                 if (Current.Type == TokenType.Separator && (Current.Value == ";" || Current.Value == "}"))
                 {
@@ -120,7 +122,7 @@ namespace Komp_lab1
         }
         private void ParseFields()
         {
-            while (Current != null &&
+            while (Current.Type != TokenType.EndOfFile &&
                    !(Current.Type == TokenType.Separator && Current.Value == "}"))
             {
                 ParseField();
@@ -131,6 +133,12 @@ namespace Komp_lab1
 
         private void ParseField()
         {
+            if (Current.Type == TokenType.EndOfFile)
+            {
+                Error("Неожиданный конец файла");
+                return;
+            }
+
             string currentType = null;
             string inputType = Current.Value;
             switch (inputType)
@@ -157,11 +165,11 @@ namespace Komp_lab1
             if (currentType == null)
             {
                 Error("Ожидался тип");
-            }  
+            }
             Next();
             SkipWhitespace();
-            
-            if (Current == null || !Current.Value.StartsWith("$"))
+
+            if (Current.Type == TokenType.EndOfFile || !Current.Value.StartsWith("$"))
             {
                 Error("Ожидалась переменная вида $name");
             }
@@ -183,10 +191,16 @@ namespace Komp_lab1
             {
                 Error("Ожидался ';'");
                 Synchronize();
-            }
+            } 
         }
         private void ParseDefault(string type)
         {
+            if (Current.Type == TokenType.EndOfFile)
+            {
+                Error("Ожидалось значение, но достигнут конец файла");
+                return;
+            }
+
             string aboba = null;
             int startPos = position;
 
@@ -251,7 +265,6 @@ namespace Komp_lab1
             {
                 Error("Ожидалась '['");
             }
-            Next();
             
             if (Match(TokenType.Separator, "]"))
             {
@@ -286,6 +299,11 @@ namespace Komp_lab1
         }
         private void ParseValue()
         {
+            if (Current.Type == TokenType.EndOfFile)
+            {
+                Error("Ожидалось значение");
+                return;
+            }
             string token = null;
             token = Current.Value;
             if (token.StartsWith("\"") && !token.EndsWith("\""))

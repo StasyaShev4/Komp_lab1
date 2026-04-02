@@ -19,7 +19,8 @@ namespace Komp_lab1
         BooleanLiteral,
         Separator,
         Whitespace,
-        Unknown
+        Unknown,
+        EndOfFile
     }
     internal class Token
     {
