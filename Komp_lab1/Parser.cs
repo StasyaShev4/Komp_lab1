@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,16 +61,16 @@ namespace Komp_lab1
                 Error("Ожидалась '{'");
                 Synchronize();
             }
-            if (Current != null
-                && Current.Type != TokenType.Whitespace
-                && !(Current.Type == TokenType.Separator && Current.Value == "}"))
+            SkipWhitespace();
+            if (Current.Value != "}")
             {
-                //MessageBox.Show("Зашли в тело структуры");
+                MessageBox.Show("Зашли в тело структуры");
                 ParseFields();
+                SkipWhitespace();
             }
             if (!Match(TokenType.Separator, "}"))
             {
-                Error("Ожидалась '}'");
+                Error("Ожидалась '}' в конце структуры");
                 Synchronize();
             }
             if (!Match(TokenType.Separator, ";"))
@@ -80,8 +81,6 @@ namespace Komp_lab1
         private bool Match(TokenType type, string value = null)
         {
             SkipWhitespace();
-            string inputType = null;
-            inputType = Current.Value;
             if (Current == null) return false;
             if (Current.Type == type && (value == null || Current.Value == value))
             {
@@ -126,6 +125,7 @@ namespace Komp_lab1
                    !(Current.Type == TokenType.Separator && Current.Value == "}"))
             {
                 ParseField();
+                SkipWhitespace();
             }
         }
 
@@ -169,7 +169,6 @@ namespace Komp_lab1
             if (Current == null || !Current.Value.StartsWith("$"))
             {
                 Error("Ожидалась переменная вида $name");
-                //Synchronize();
             }
             if (Current.Value.Length <= 1)
             {
@@ -180,154 +179,149 @@ namespace Komp_lab1
 
             if (Match(TokenType.Operator, "="))
             {
-                MessageBox.Show("Зашли в значение по умолчанию");
-                //ParseDefault(currentType);
+                ParseDefault(currentType);
             }
-            inputType = null;
-            inputType = Current.Value;
             if (!Match(TokenType.Separator, ";"))
             {
                 Error("Ожидался ';'");
                 Synchronize();
             }
-
         }
-        private void ParseValue(string expectedType)
+        private void ParseDefault(string type)
         {
-            if (Current == null) return;
-            switch (expectedType)
+            string aboba = null;
+            int startPos = position;
+
+            SkipWhitespace();
+
+            aboba = Current.Value;
+            switch (type)
             {
                 case "int":
                     bool isNegative = Match(TokenType.Operator, "-");
-                    if (!Match(TokenType.IntegerLiteral))
+                    if (!int.TryParse(aboba, out _))
                     {
-                        Error("Ожидалось целое число");
+                        Error($"Ожидалось целое число (int)");
                         if (!isNegative) Next();
                     }
                     break;
 
                 case "float":
                     bool isNegative1 = Match(TokenType.Operator, "-");
-                    if (Current.Type == TokenType.FloatLiteral)
+                    if (!float.TryParse(aboba, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                     {
-                        if (Current.Value.StartsWith("."))
-                        {
-                            Error("Ожидалась цифра перед точкой");
-                            if (!isNegative1) Next();
-                            return;
-                        }
-                        Next();
-                    }
-                    else
-                    {
-                        Error("Ожидалось вещественное число");
-                        Next();
+                        Error($"Ожидалось вещественное число (float) например: 1.2");
+                        if (!isNegative1) Next();
                     }
                     break;
 
                 case "string":
-                    if (!Match(TokenType.StringLiteral))
+                    if (aboba.StartsWith("\"") && !aboba.EndsWith("\""))
                     {
-                        Error("Ожидалась строка");
-                        Next();
+                        Error("Незакрытая кавычка: строка начинается с кавычки, но не заканчивается ей");
+                    }
+                    if (!aboba.StartsWith("\"") && aboba.EndsWith("\""))
+                    {
+                        Error("Незакрытая кавычка: строка заканчивается кавычкой, но не начинается с нее");
+                    }
+                    if (!aboba.StartsWith("\"") && !aboba.EndsWith("\""))
+                    {
+                        Error("Ожидалась строка (string)");
                     }
                     break;
 
                 case "bool":
-                    if (!Match(TokenType.BooleanLiteral)) 
-                    { 
-                        Error("Ожидалось true или false");
-                        Next();
-                    }
-                    break;
-
-                case "any":
-                    Match(TokenType.Operator, "-");
-                    if (Match(TokenType.IntegerLiteral) ||
-                        Match(TokenType.FloatLiteral) ||
-                        Match(TokenType.StringLiteral) ||
-                        Match(TokenType.BooleanLiteral))
-                        return;
-
-                    Error("Ожидалось значение");
-                    Next();
+                    if (!bool.TryParse(aboba, out _))
+                    {
+                        Error($"Ожидалось логическое значение (true или false)");
+                    }                    
                     break;
 
                 case "array":
-                    ParseArray("any");
+                    ParseArray(type); 
                     break;
 
                 default:
-                    Error("Неизвестный тип");
+                    Error($"Неизвестный тип: {type}");
                     break;
             }
         }
         private void ParseArray(string elementType)
         {
+            string aboba = null;
             if (!Match(TokenType.Separator, "["))
             {
                 Error("Ожидалась '['");
-                return;
             }
-
-            SkipWhitespace();
-
+            Next();
+            
             if (Match(TokenType.Separator, "]"))
             {
                 return;
             }
 
-            ParseValue(elementType);
-
-            while (true)
+            ParseValue();
+            do
             {
-                SkipWhitespace();
-
-                if (!Match(TokenType.Separator, ","))
-                    break;
-
-                SkipWhitespace();
-
-                if (Current != null && Current.Value == "]")
+                if (Match(TokenType.Separator, ","))
+                {
+                    SkipWhitespace();
+                    ParseValue();
+                }
+                else
                 {
                     Error("Ожидалось значение после ','");
-                    break;
+                    Next();
                 }
-
-                ParseValue(elementType);
+                SkipWhitespace();
+                aboba = null;
+                aboba = Current.Value;
+                if (aboba == "]")
+                    break;
             }
+            while (true);
 
             if (!Match(TokenType.Separator, "]"))
             {
                 Error("Ожидалась ']'");
             }
         }
-        private void ParseDefault(string type)
+        private void ParseValue()
         {
-            int beforePos = position;
-            //ParseDefault(currentType);
-
-            SkipWhitespace();
-            if (Current != null && Current.Value == "[")
+            string token = null;
+            token = Current.Value;
+            if (token.StartsWith("\"") && !token.EndsWith("\""))
             {
-                ParseArray("any");
+                Error("Незакрытая кавычка: строка начинается с кавычки, но не заканчивается ей");
             }
-            else
+            if (!token.StartsWith("\"") && token.EndsWith("\""))
             {
-                ParseValue(type);
+                Error("Незакрытая кавычка: строка заканчивается кавычкой, но не начинается с нее");
             }
 
-            if (beforePos == position)
+            switch (Current.Type)
             {
-                while (Current != null &&
-                       !(Current.Type == TokenType.Separator &&
-                         (Current.Value == ";" || Current.Value == "}")))
-                {
+                case TokenType.StringLiteral:
                     Next();
-                }
-                //ParseDefault(currentType);
+                    break;
+                case TokenType.IntegerLiteral:
+                    Next();
+                    break;
+                case TokenType.FloatLiteral:
+                    Next();
+                    break;
+                case TokenType.BooleanLiteral:
+                    Next();
+                    break;
+
+                default:
+                    Error($"Неожиданный токен: {Current.Value}");
+                    Next();
+                    break;
             }
         }
+        
+        
         private void Error(string message)
         {
             Errors.Add(new SyntaxError

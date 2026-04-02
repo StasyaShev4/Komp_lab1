@@ -57,6 +57,20 @@ namespace Komp_lab1
             dataGridView1.Columns.Clear();
             dataGridView1.Columns.AddRange(columns);
 
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+            // 1 столбец — по содержимому
+            dataGridView1.Columns["Fragment"].AutoSizeMode =
+                DataGridViewAutoSizeColumnMode.AllCells;
+
+            // 2 столбец — по содержимому
+            dataGridView1.Columns["Location"].AutoSizeMode =
+                DataGridViewAutoSizeColumnMode.AllCells;
+
+            // 3 столбец — занимает всё оставшееся место
+            dataGridView1.Columns["Message"].AutoSizeMode =
+                DataGridViewAutoSizeColumnMode.Fill;
+
             //DataGridViewColumn[] columns = new DataGridViewColumn[]
             //{
             //    new DataGridViewTextBoxColumn
@@ -424,14 +438,6 @@ namespace Komp_lab1
                 parser.Parse();
 
                 dataGridView1.Rows.Clear();
-
-                if (parser.Errors.Count == 0)
-                    label2.Text = "Проблемы не нейдены.";
-                else
-                {
-                    
-                }
-                
 
                 foreach (var err in parser.Errors)
                 {
