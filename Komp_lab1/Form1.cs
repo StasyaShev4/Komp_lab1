@@ -14,6 +14,7 @@ namespace Komp_lab1
     public partial class Form1 : Form
     {
         Correction correction;
+        Substrings substrings;
         string filename;
         bool filesave = false;
         [DllImport("user32.dll")]
@@ -34,8 +35,155 @@ namespace Komp_lab1
             dataGridView1.CellClick += DataGridView1_CellClick;
             LineNumbers();
             DGInit();
+
+
+            substrings = new Substrings();
+            comboBox1.Items.Add("Гласные (без а)");
+            comboBox1.Items.Add("Акронимы");
+            comboBox1.Items.Add("URL");
+            comboBox1.SelectedIndex = 0;
+            richTextBox1.DetectUrls = false;
         }
-        private void DGInit() 
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ResetDataGrid();
+            dataGridView1.Rows.Clear();
+
+            string text = richTextBox1.Text;
+            int mode = comboBox1.SelectedIndex;
+
+            var results = substrings.Find(text, mode);
+
+            foreach (var res in results)
+            {
+                int rowIndex = dataGridView1.Rows.Add(
+                    res.Value,
+                    $"строка {res.Line}, позиция {res.Position + 1}",
+                    $"Длина: {res.Length}"
+                );
+                if (mode == 2 && res.Value.Contains("://"))
+                {
+                    dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightBlue;
+                }
+
+                dataGridView1.Rows[rowIndex].Tag = res;
+            }
+
+            label2.Text = $"Найдено: {results.Count}";
+
+            richTextBox1.SelectAll();
+            richTextBox1.SelectionBackColor = Color.White;
+            richTextBox1.DeselectAll();
+
+            if (mode == 2) // только для URL
+            {
+                string pattern = @"\b(?<protocol>http|https|ftp)(?<sep>:\/\/)(?<domain>([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?<port>:\d+)?(?<path>\/[^\s]*)?";
+
+                var matches = System.Text.RegularExpressions.Regex.Matches(richTextBox1.Text, pattern);
+
+                foreach (System.Text.RegularExpressions.Match match in matches)
+                {
+                    if (match.Groups["protocol"].Success)
+                    {
+                        richTextBox1.SelectionStart = match.Groups["protocol"].Index;
+                        richTextBox1.SelectionLength = match.Groups["protocol"].Length;
+                        richTextBox1.SelectionBackColor = Color.LightGreen;
+                    }
+
+                    if (match.Groups["sep"].Success)
+                    {
+                        richTextBox1.SelectionStart = match.Groups["sep"].Index;
+                        richTextBox1.SelectionLength = match.Groups["sep"].Length;
+                        richTextBox1.SelectionBackColor = Color.LightBlue;
+                    }
+                    if (match.Groups["domain"].Success)
+                    {
+                        richTextBox1.SelectionStart = match.Groups["domain"].Index;
+                        richTextBox1.SelectionLength = match.Groups["domain"].Length;
+                        richTextBox1.SelectionBackColor = Color.PeachPuff;
+                    }
+
+                    if (match.Groups["port"].Success)
+                    {
+                        richTextBox1.SelectionStart = match.Groups["port"].Index;
+                        richTextBox1.SelectionLength = match.Groups["port"].Length;
+                        richTextBox1.SelectionBackColor = Color.LightBlue;
+                    }
+
+                    if (match.Groups["path"].Success)
+                    {
+                        richTextBox1.SelectionStart = match.Groups["path"].Index;
+                        richTextBox1.SelectionLength = match.Groups["path"].Length;
+                        richTextBox1.SelectionBackColor = Color.White;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var res in results)
+                {
+                    richTextBox1.SelectionStart = res.Position;
+                    richTextBox1.SelectionLength = res.Length;
+                    richTextBox1.SelectionBackColor = Color.PowderBlue;
+                }
+            }
+        }
+        private void ResetDataGrid()
+        {
+            dataGridView1.Rows.Clear();
+            dataGridView1.Columns.Clear();
+
+            dataGridView1.Columns.Add("Fragment", "Подстрока");
+            dataGridView1.Columns.Add("Location", "Позиция");
+            dataGridView1.Columns.Add("Length", "Длина");
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int mode = comboBox1.SelectedIndex;
+
+            switch (mode)
+            {
+                case 0:
+                    richTextBox1.Text =
+        @"Ау, я иду! Эхо унесло её крик в ущелье. Оаэ, ау! Это было странное эхо.
+Гласные: е, ё, и, о, у, ю, ы, э, я. Но не а.
+Аа Аа аА АА аа — только А/а.
+Единичные: е ё и о у ю ы э я.
+Смешанные: ба, да, ма, ра — тут а есть, но не должно найтись.";
+                    break;
+
+                case 1:
+                    richTextBox1.Text =
+        @"N.A.S.A. успешно запустила новый спутник.
+В отчёте ВОЗ указаны данные по COVID-19.
+Сотрудники ФСБ провели операцию.
+Используем алгоритм SHA-256 для хеширования.";
+                    break;
+
+                case 2:
+                    richTextBox1.Text =
+        @"http://example.com
+https://blog.my-site.co.uk
+ftp://data.storage.company.com
+https://alice.yandex.ru/chat/019d18be-e76b-4000-a249-3b910ef90753/
+https://sub-domain.example.org";
+                    break;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+        private void DGInit()
         {
             DataGridViewColumn[] columns = new DataGridViewColumn[]
             {
@@ -103,7 +251,7 @@ namespace Komp_lab1
         {
             if (e.KeyCode == Keys.Tab)
             {
-                e.IsInputKey = true; 
+                e.IsInputKey = true;
             }
         }
         private void RichTextBox1_KeyDown(object sender, KeyEventArgs e)
@@ -144,11 +292,15 @@ namespace Komp_lab1
             RichTextBox1_VScroll(null, null);
         }
 
-        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e) 
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
             var row = dataGridView1.Rows[e.RowIndex];
+
+            richTextBox1.SelectAll();
+            richTextBox1.SelectionBackColor = Color.White;
+            richTextBox1.DeselectAll();
 
             if (row.Tag is SyntaxError err)
             {
@@ -162,6 +314,14 @@ namespace Komp_lab1
                 richTextBox1.Focus();
                 richTextBox1.SelectionStart = token.Position;
                 richTextBox1.SelectionLength = token.Value.Length;
+                richTextBox1.ScrollToCaret();
+            }
+            else if (row.Tag is SubstringResult sub)
+            {
+                richTextBox1.Focus();
+                richTextBox1.SelectionStart = sub.Position;
+                richTextBox1.SelectionLength = sub.Length;
+                richTextBox1.SelectionBackColor = Color.PowderBlue;
                 richTextBox1.ScrollToCaret();
             }
         }
@@ -202,9 +362,9 @@ namespace Komp_lab1
 
             return true;
         }
-        private bool IsFileContentChanged() 
+        private bool IsFileContentChanged()
         {
-            try 
+            try
             {
                 if (filename == null || filename == "")
                 {
@@ -229,7 +389,7 @@ namespace Komp_lab1
             richTextBox1.Clear();
         }
         private void butt_save_file_Click(object sender, EventArgs e)
-        {            
+        {
             if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
             filename = saveFileDialog1.FileName;
@@ -342,7 +502,7 @@ namespace Komp_lab1
         {
             correction.Select_all();
         }
-         private void Output_Click(object sender, EventArgs e)
+        private void Output_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -353,7 +513,7 @@ namespace Komp_lab1
         }
 
 
-        private string GetTokenTypeString(TokenType type) 
+        private string GetTokenTypeString(TokenType type)
         {
             switch (type)
             {

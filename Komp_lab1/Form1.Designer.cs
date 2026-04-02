@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.butt_about_program = new System.Windows.Forms.Button();
@@ -78,8 +78,11 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -93,6 +96,9 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.butt_about_program);
             this.panel1.Controls.Add(this.butt_help);
@@ -125,7 +131,7 @@
             // 
             this.butt_about_program.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_about_program.BackgroundImage")));
             this.butt_about_program.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_about_program.Location = new System.Drawing.Point(648, 32);
+            this.butt_about_program.Location = new System.Drawing.Point(594, 33);
             this.butt_about_program.Name = "butt_about_program";
             this.butt_about_program.Size = new System.Drawing.Size(58, 33);
             this.butt_about_program.TabIndex = 12;
@@ -136,7 +142,7 @@
             // 
             this.butt_help.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_help.BackgroundImage")));
             this.butt_help.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_help.Location = new System.Drawing.Point(585, 32);
+            this.butt_help.Location = new System.Drawing.Point(531, 33);
             this.butt_help.Name = "butt_help";
             this.butt_help.Size = new System.Drawing.Size(57, 33);
             this.butt_help.TabIndex = 11;
@@ -147,7 +153,7 @@
             // 
             this.butt_run.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_run.BackgroundImage")));
             this.butt_run.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_run.Location = new System.Drawing.Point(537, 32);
+            this.butt_run.Location = new System.Drawing.Point(483, 33);
             this.butt_run.Name = "butt_run";
             this.butt_run.Size = new System.Drawing.Size(42, 33);
             this.butt_run.TabIndex = 10;
@@ -158,7 +164,7 @@
             // 
             this.butt_paste.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_paste.BackgroundImage")));
             this.butt_paste.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_paste.Location = new System.Drawing.Point(489, 32);
+            this.butt_paste.Location = new System.Drawing.Point(435, 33);
             this.butt_paste.Name = "butt_paste";
             this.butt_paste.Size = new System.Drawing.Size(42, 33);
             this.butt_paste.TabIndex = 9;
@@ -169,7 +175,7 @@
             // 
             this.butt_cut.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_cut.BackgroundImage")));
             this.butt_cut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_cut.Location = new System.Drawing.Point(434, 32);
+            this.butt_cut.Location = new System.Drawing.Point(380, 33);
             this.butt_cut.Name = "butt_cut";
             this.butt_cut.Size = new System.Drawing.Size(49, 33);
             this.butt_cut.TabIndex = 8;
@@ -180,7 +186,7 @@
             // 
             this.butt_copy.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_copy.BackgroundImage")));
             this.butt_copy.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_copy.Location = new System.Drawing.Point(384, 32);
+            this.butt_copy.Location = new System.Drawing.Point(330, 33);
             this.butt_copy.Name = "butt_copy";
             this.butt_copy.Size = new System.Drawing.Size(44, 33);
             this.butt_copy.TabIndex = 7;
@@ -191,7 +197,7 @@
             // 
             this.butt_repeat.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_repeat.BackgroundImage")));
             this.butt_repeat.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_repeat.Location = new System.Drawing.Point(295, 31);
+            this.butt_repeat.Location = new System.Drawing.Point(241, 32);
             this.butt_repeat.Name = "butt_repeat";
             this.butt_repeat.Size = new System.Drawing.Size(67, 33);
             this.butt_repeat.TabIndex = 6;
@@ -202,7 +208,7 @@
             // 
             this.butt_cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("butt_cancel.BackgroundImage")));
             this.butt_cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.butt_cancel.Location = new System.Drawing.Point(222, 31);
+            this.butt_cancel.Location = new System.Drawing.Point(168, 32);
             this.butt_cancel.Name = "butt_cancel";
             this.butt_cancel.Size = new System.Drawing.Size(67, 33);
             this.butt_cancel.TabIndex = 5;
@@ -464,7 +470,7 @@
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox1.Location = new System.Drawing.Point(98, 0);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(784, 269);
+            this.richTextBox1.Size = new System.Drawing.Size(784, 302);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -476,7 +482,7 @@
             this.richTextBox2.Location = new System.Drawing.Point(0, 0);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox2.Size = new System.Drawing.Size(98, 269);
+            this.richTextBox2.Size = new System.Drawing.Size(98, 302);
             this.richTextBox2.TabIndex = 13;
             this.richTextBox2.Text = "";
             // 
@@ -486,14 +492,14 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 32);
@@ -501,7 +507,7 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(882, 152);
+            this.dataGridView1.Size = new System.Drawing.Size(882, 119);
             this.dataGridView1.TabIndex = 0;
             // 
             // openFileDialog1
@@ -527,7 +533,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Panel2.Controls.Add(this.panel2);
             this.splitContainer1.Size = new System.Drawing.Size(882, 457);
-            this.splitContainer1.SplitterDistance = 269;
+            this.splitContainer1.SplitterDistance = 302;
             this.splitContainer1.TabIndex = 14;
             // 
             // panel2
@@ -540,6 +546,15 @@
             this.panel2.Size = new System.Drawing.Size(882, 32);
             this.panel2.TabIndex = 2;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(399, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(44, 16);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "label3";
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -549,14 +564,33 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
-            // label3
+            // button1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(419, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 16);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "label3";
+            this.button1.Location = new System.Drawing.Point(659, 31);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(220, 33);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "Анализ текста";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(659, 67);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(220, 24);
+            this.comboBox1.TabIndex = 15;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(576, 70);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "Пример текста";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
@@ -636,6 +670,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button2;
     }
 }
 
