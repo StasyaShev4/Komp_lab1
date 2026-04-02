@@ -28,6 +28,8 @@ namespace Komp_lab1
             richTextBox2.ScrollBars = RichTextBoxScrollBars.None;
             correction = new Correction(richTextBox1);
             richTextBox1.VScroll += RichTextBox1_VScroll;
+            richTextBox1.KeyDown += RichTextBox1_KeyDown;
+            richTextBox1.PreviewKeyDown += RichTextBox1_PreviewKeyDown;
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
             dataGridView1.CellClick += DataGridView1_CellClick;
             LineNumbers();
@@ -40,7 +42,7 @@ namespace Komp_lab1
                 new DataGridViewTextBoxColumn
                 {
                     Name = "Fragment",
-                    HeaderText = "Неверный фрагмент"
+                    HeaderText = "Фрагмент"
                 },
                 new DataGridViewTextBoxColumn
                 {
@@ -59,43 +61,11 @@ namespace Komp_lab1
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
-            // 1 столбец — по содержимому
-            dataGridView1.Columns["Fragment"].AutoSizeMode =
-                DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns["Fragment"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns["Location"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns["Message"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            // 2 столбец — по содержимому
-            dataGridView1.Columns["Location"].AutoSizeMode =
-                DataGridViewAutoSizeColumnMode.AllCells;
-
-            // 3 столбец — занимает всё оставшееся место
-            dataGridView1.Columns["Message"].AutoSizeMode =
-                DataGridViewAutoSizeColumnMode.Fill;
-
-            //DataGridViewColumn[] columns = new DataGridViewColumn[]
-            //{
-            //    new DataGridViewTextBoxColumn
-            //    {
-            //        Name = "ConditionalCode",
-            //        HeaderText = "Условный код"
-            //    },
-            //    new DataGridViewTextBoxColumn
-            //    {
-            //        Name = "TypeToken",
-            //        HeaderText = "Тип лексемы"
-            //    },
-            //    new DataGridViewTextBoxColumn
-            //    {
-            //        Name = "lexeme",
-            //        HeaderText = "Лексемы"
-            //    },
-            //    new DataGridViewTextBoxColumn
-            //    {
-            //        Name = "location",
-            //        HeaderText = "Местоположение"
-            //    }
-            //};
-            //dataGridView1.Columns.AddRange(columns);
-            //dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
+            dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
         }
         private void LineNumbers()
         {
@@ -129,6 +99,44 @@ namespace Komp_lab1
                 richTextBox2.ScrollToCaret();
             }
         }
+        private void RichTextBox1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Tab)
+            {
+                e.IsInputKey = true; 
+            }
+        }
+        private void RichTextBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Tab)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+
+                if (e.Shift)
+                {
+                    int cursorPos = richTextBox1.SelectionStart;
+                    if (cursorPos >= 4)
+                    {
+                        richTextBox1.SelectionStart = cursorPos - 4;
+                        richTextBox1.SelectionLength = 4;
+                        if (richTextBox1.SelectedText == "    ")
+                        {
+                            richTextBox1.SelectedText = "";
+                        }
+                        else
+                        {
+                            richTextBox1.SelectionStart = cursorPos;
+                            richTextBox1.SelectionLength = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    richTextBox1.SelectedText = "    ";
+                }
+            }
+        }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
@@ -149,21 +157,14 @@ namespace Komp_lab1
                 richTextBox1.SelectionLength = err.Fragment.Length;
                 richTextBox1.ScrollToCaret();
             }
-            //Token token = row.Tag as Token;
-
-            //if (token == null) return;
-
-            //int pos = token.Position;
-            //int length = token.Value.Length;
-
-            //richTextBox1.Focus();
-            //richTextBox1.SelectionStart = pos;
-            //richTextBox1.SelectionLength = length;
-            //richTextBox1.ScrollToCaret();
+            else if (row.Tag is Token token)
+            {
+                richTextBox1.Focus();
+                richTextBox1.SelectionStart = token.Position;
+                richTextBox1.SelectionLength = token.Value.Length;
+                richTextBox1.ScrollToCaret();
+            }
         }
-
-
-
         private bool CheckingForChanges()
         {
             if (IsFileContentChanged())
@@ -245,7 +246,6 @@ namespace Komp_lab1
             richTextBox1.Text = fileText;
             filesave = false;
             label1.Text = filename;
-            //MessageBox.Show("Файл открыт");
         }
         private void createTSM_Click(object sender, EventArgs e)
         {
@@ -353,10 +353,6 @@ namespace Komp_lab1
         }
 
 
-
-
-
-
         private string GetTokenTypeString(TokenType type) 
         {
             switch (type)
@@ -379,40 +375,16 @@ namespace Komp_lab1
                     return type.ToString();
             }
         }
-        private int GetTokenCode(TokenType type, string value = "")
+        private string GetLocation(int position, string value, int line)
         {
-            switch (type)
-            {
-                case TokenType.Keyword:
-                    return 1; 
-                case TokenType.Identifier:
-                    return 2;
-                case TokenType.Whitespace:
-                    return 3;
-                case TokenType.Variable:
-                    return 5;
-                case TokenType.Operator:
-                    return 8;
-                case TokenType.Separator:
-                    if (value == ";") return 6;
-                    if (value == "{") return 4;
-                    if (value == "}") return 7;
-                    if (value == "[") return 12;
-                    if (value == "]") return 13;
-                    if (value == ",") return 14;
-                    //if (value == "'") return 11;
-                    return 0;
-                case TokenType.FloatLiteral: 
-                    return 10;
-                case TokenType.StringLiteral: 
-                    return 14;
-                case TokenType.IntegerLiteral: 
-                    return 9;
-                case TokenType.Unknown:
-                    return 0;
-                default:
-                    return 0;
-            }
+            int length = value.Length;
+            if (value == " " || value == "\t" || value == "\n" || value == "\r" || value == "(пробел)")
+                length = 1;
+
+            if (length == 1)
+                return $"строка {line}, позиция {position + 1}";
+            else
+                return $"строка {line}, {position + 1}-{position + length}";
         }
         private void RunLexicalAnalyzer()
         {
@@ -453,40 +425,35 @@ namespace Komp_lab1
                 }
                 label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
 
-            //foreach (Token token in tokens)
-                //{
-                //    string tokenType = GetTokenTypeString(token.Type);
-                //    int tokenCode = GetTokenCode(token.Type, token.Value);
-                //    string location = Position(token.Position, token.Value, token.Line);
-                //    //dataGridView1.Rows.Add(tokenCode,tokenType, token.Value, location );
-                //    int rowIndex = dataGridView1.Rows.Add(tokenCode, tokenType, token.Value, location);
-                //    dataGridView1.Rows[rowIndex].Tag = token;
+                foreach (Token token in tokens)
+                {
+                    if (token.Type == TokenType.Whitespace)
+                        continue;
 
-                //    if (token.Type == TokenType.Unknown)
-                //    {
-                //        richTextBox1.SelectionStart = token.Position;
-                //        richTextBox1.SelectionLength = token.Value.Length;
-                //        richTextBox1.SelectionColor = Color.Red;
-                //        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
-                //    }
-                //}
-                label1.Text = $"Найдено токенов: {tokens.Count}";
+                    string tokenTypeDesc = GetTokenTypeString(token.Type);
+                    string location = GetLocation(token.Position, token.Value, token.Line);
+
+                    int rowIndex = dataGridView1.Rows.Add(
+                        token.Value,
+                        location,
+                        tokenTypeDesc
+                    );
+                    dataGridView1.Rows[rowIndex].Tag = token;
+
+                    if (token.Type == TokenType.Unknown)
+                    {
+                        richTextBox1.SelectionStart = token.Position;
+                        richTextBox1.SelectionLength = token.Value.Length;
+                        richTextBox1.SelectionColor = Color.Red;
+                        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
+                    }
+                }
+                label3.Text = $"Найдено токенов: {tokens.Count}";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при лексическом анализе: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка при анализе: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-        private string Position(int pos, string value, int line) 
-        {
-            int val = value.Length;
-            if (value == "(пробел)")
-                val = 0;
-           if (val == 1)
-                val = 0;
-
-            string str = $"строка {line}, {pos + 1}-{pos + val + 1}";
-            return str;
         }
         private void butt_run_Click(object sender, EventArgs e)
         {

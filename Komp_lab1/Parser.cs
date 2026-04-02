@@ -64,7 +64,6 @@ namespace Komp_lab1
             SkipWhitespace();
             if (Current.Value != "}")
             {
-                MessageBox.Show("Зашли в тело структуры");
                 ParseFields();
                 SkipWhitespace();
             }
@@ -158,13 +157,9 @@ namespace Komp_lab1
             if (currentType == null)
             {
                 Error("Ожидался тип");
-                Synchronize();
-            }
-            else 
-            {
-                Next();
-                SkipWhitespace();
-            }
+            }  
+            Next();
+            SkipWhitespace();
             
             if (Current == null || !Current.Value.StartsWith("$"))
             {
@@ -181,6 +176,9 @@ namespace Komp_lab1
             {
                 ParseDefault(currentType);
             }
+            Next();
+            SkipWhitespace();
+
             if (!Match(TokenType.Separator, ";"))
             {
                 Error("Ожидался ';'");
