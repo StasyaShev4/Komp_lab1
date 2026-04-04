@@ -25,12 +25,12 @@ namespace Komp_lab1
                     break;
 
                 case 1:
-                    pattern = @"\b(?:[A-ZА-ЯЁ]\.){2,}|[A-ZА-ЯЁ]{2,}\b";
-                    break;
+                    //pattern = @"\b(?:[A-ZА-ЯЁ]\.){2,}|[A-ZА-ЯЁ]{2,}\b";
+                    //break;
+                    return FindAcronymsAutomaton(text);
 
                 case 2: 
                     //pattern = @"\b(http|https|ftp):\/\/([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?";
-                    //pattern = @"\b(?<protocol>http|https|ftp):\/\/(?<domain>([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?<port>:\d+)?(?<path>\/[^\s]*)?";
                     pattern = @"\b(?<protocol>http|https|ftp)(?<sep>:\/\/)(?<domain>([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?<port>:\d+)?(?<path>\/[^\s]*)?";
                     break;
             }
@@ -42,7 +42,6 @@ namespace Komp_lab1
             {
                 int line = text.Substring(0, match.Index).Split('\n').Length;
 
-                // ВЕСЬ URL
                 results.Add(new SubstringResult
                 {
                     Value = match.Value,
@@ -89,6 +88,66 @@ namespace Komp_lab1
             }
 
             return results;
+        }
+        private List<SubstringResult> FindAcronymsAutomaton(string text)
+        {
+            var results = new List<SubstringResult>();
+
+            int i = 0;
+
+            while (i < text.Length)
+            {
+                if (char.IsUpper(text[i]))
+                {
+                    int start = i;
+                    int j = i;
+
+                    while (j < text.Length && char.IsUpper(text[j]))
+                        j++;
+
+                    int length = j - start;
+
+                    if (length >= 2)
+                    {
+                        results.Add(CreateResult(text, start, j));
+                    }
+
+                    int k = i;
+                    int pairs = 0;
+
+                    while (k + 1 < text.Length &&
+                           char.IsUpper(text[k]) &&
+                           text[k + 1] == '.')
+                    {
+                        pairs++;
+                        k += 2;
+                    }
+
+                    if (pairs >= 2)
+                    {
+                        results.Add(CreateResult(text, i, k));
+                        i = k;
+                        continue;
+                    }
+
+                    i = j;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            return results;
+        }
+        private SubstringResult CreateResult(string text, int start, int end)
+        {
+            return new SubstringResult
+            {
+                Value = text.Substring(start, end - start),
+                Position = start,
+                Line = text.Substring(0, start).Split('\n').Length
+            };
         }
     }
 }
