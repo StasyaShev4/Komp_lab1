@@ -123,6 +123,10 @@ namespace Komp_lab1
                                 state = State.ERROR;
                             }
                         }
+                        else if (Current.Type == TokenType.EndOfFile)
+                        {
+                            state = State.S8;
+                        }
                         else
                         {
                             Error("Ожидался тип переменной или '}'");
