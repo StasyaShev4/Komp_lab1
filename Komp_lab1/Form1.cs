@@ -15,7 +15,6 @@ namespace Komp_lab1
     {
         Correction correction;
         string filename;
-        bool filesave = false;
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
         private const int WM_VSCROLL = 0x115;
@@ -225,7 +224,6 @@ namespace Komp_lab1
         private void butt_new_file_Click(object sender, EventArgs e)
         {
             label1.Text = "";
-            filesave = false;
             richTextBox1.Clear();
         }
         private void butt_save_file_Click(object sender, EventArgs e)
@@ -244,7 +242,6 @@ namespace Komp_lab1
             string fileText = System.IO.File.ReadAllText(filename);
             richTextBox1.Clear();
             richTextBox1.Text = fileText;
-            filesave = false;
             label1.Text = filename;
         }
         private void createTSM_Click(object sender, EventArgs e)
@@ -363,8 +360,6 @@ namespace Komp_lab1
                     return "Идентификатор";
                 case TokenType.Variable:
                     return "Переменная";
-                case TokenType.Operator:
-                    return "Оператор";
                 case TokenType.Separator:
                     return "Разделитель";
                 case TokenType.Whitespace:
