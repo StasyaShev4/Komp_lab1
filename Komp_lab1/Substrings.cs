@@ -25,14 +25,16 @@ namespace Komp_lab1
                     break;
 
                 case 1:
-                    //pattern = @"\b(?:[A-ZА-ЯЁ]\.){2,}|[A-ZА-ЯЁ]{2,}\b";
-                    //break;
-                    return FindAcronymsAutomaton(text); 
-
+                    pattern = @"\b(?:[A-ZА-ЯЁ]\.){2,}|[A-ZА-ЯЁ]{2,}\b";
+                    break;
                 case 2: 
                     //pattern = @"\b(http|https|ftp):\/\/([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?";
                     pattern = @"\b(?<protocol>http|https|ftp)(?<sep>:\/\/)(?<domain>([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?<port>:\d+)?(?<path>\/[^\s]*)?";
                     break;
+                case 3:
+                    return FindAcronymsAutomaton(text);
+
+
 
             }
 

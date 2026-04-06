@@ -41,6 +41,7 @@ namespace Komp_lab1
             comboBox1.Items.Add("Гласные (без а)");
             comboBox1.Items.Add("Акронимы");
             comboBox1.Items.Add("URL");
+            comboBox1.Items.Add("Автомат");
             comboBox1.SelectedIndex = 0;
             richTextBox1.DetectUrls = false;
         }
@@ -76,7 +77,7 @@ namespace Komp_lab1
             richTextBox1.SelectionBackColor = Color.White;
             richTextBox1.DeselectAll();
 
-            if (mode == 2) // только для URL
+            if (mode == 2) 
             {
                 string pattern = @"\b(?<protocol>http|https|ftp)(?<sep>:\/\/)(?<domain>([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?<port>:\d+)?(?<path>\/[^\s]*)?";
 
@@ -171,6 +172,14 @@ ftp://data.storage.company.com
 https://alice.yandex.ru/chat/019d18be-e76b-4000-a249-3b910ef90753/
 https://sub-domain.example.org";
                     break;
+                case 3:
+                    richTextBox1.Text =
+        @"N.A.S.A. успешно запустила новый спутник.
+В отчёте ВОЗ указаны данные по COVID-19.
+Сотрудники ФСБ провели операцию.
+Используем алгоритм SHA-256 для хеширования.";
+                    break;
+
             }
         }
 
