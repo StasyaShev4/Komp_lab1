@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>О программе</title>
+
+    <style>
+        body {
+            background: #ffffff;
+            margin: 0;
+            padding: 30px;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #000000;
+        }
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        p {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-size: 16px;
+            margin: 15px 0;
+        }
+        .literature-list {
+            margin: 15px 0;
+            padding-left: 30px;
+            list-style-type: none;
+        }
+        .literature-list li {
+            margin: 12px 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .literature-list li::before {
+            content: "•";
+            color: #333;
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            margin-left: -20px;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>О программе</h1>
+
+<p>
+Программный продукт представляет собой текстовый редактор с расширяемым функционалом,
+предназначенный для анализа исходного кода и дальнейшего развития до полноценного языкового процессора.
+</p>
+
+<hr>
+
+<h2>Быстрая навигация</h2>
+
+<ul>
+    <li><a href="#gui">GUI интерфейс</a></li>
+    <li><a href="#lexer">Лексический анализатор</a></li>
+    <li><a href="#parser">Синтаксический анализатор</a></li>
+    <li><a href="#tech">Технологии</a></li>
+</ul>
+
+<hr>
+
+<h2 id="gui">GUI интерфейс</h2>
+
+<div class="block">
+<p>
+Разработан графический интерфейс в виде текстового редактора.
+</p>
+
+<ul>
+    <li>Основное меню</li>
+    <li>Панель инструментов</li>
+    <li>Область редактирования текста</li>
+    <li>Область вывода результатов</li>
+</ul>
+
+<p><b>Функциональность:</b></p>
+
+<ul>
+    <li>Создание, открытие и сохранение файлов</li>
+    <li>Редактирование текста (копирование, вставка, отмена и др.)</li>
+    <li>Справка о программе</li>
+    <li>Подтверждение выхода при несохранённых данных</li>
+</ul>
+</div>
+
+<hr>
+
+<h2 id="lexer">Лексический анализатор</h2>
+
+<div class="block">
+<p>
+Лексический анализатор предназначен для разбиения входного текста на лексемы.
+</p>
+
+<p><b>Поддерживаемые элементы:</b></p>
+
+<ul>
+    <li>Ключевые слова: <code>struct, string, int, bool, array, float</code></li>
+    <li>Идентификаторы</li>
+    <li>Переменные PHP (начинаются с $)</li>
+    <li>Разделители: { } ;</li>
+</ul>
+
+<p><b>Пример:</b></p>
+
+<pre>
+struct Employee {
+    string $name;
+    int $salary;
+};
+</pre>
+</div>
+
+<hr>
+
+<h2 id="parser">Синтаксический анализатор</h2>
+
+<div class="block">
+<p>
+Синтаксический анализатор выполняет проверку структуры программы на основе заданной грамматики.
+</p>
+
+<p><b>Особенности:</b></p>
+
+<ul>
+    <li>Автоматная грамматика</li>
+    <li>Метод анализа на основе конечного автомата</li>
+    <li>Обработка ошибок методом Айронса</li>
+</ul>
+
+<p><b>Пример структуры:</b></p>
+
+<pre>
+struct User {
+    string $username;
+    int $age;
+};
+</pre>
+</div>
+
+<hr>
+
+<h2 id="tech">Используемые технологии</h2>
+
+<div class="block">
+<ul>
+    <li>C#</li>
+    <li>WinForms</li>
+    <li>Visual Studio</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>Автор</h2>
+
+<p>
+Шевякова Анастасия Игоревна<br>
+Группа: АВТ-314
+</p>
+
+<hr>
+
+<h2>Дополнительно</h2>
+
+<p>
+Руководство пользователя:
+<br>
+<a href="help.html">Открыть документацию</a>
+</p>
+
+</body>
+</html>

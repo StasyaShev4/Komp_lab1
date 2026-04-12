@@ -266,13 +266,11 @@ namespace Komp_lab1
         }
         private void CallingHelp_Click(object sender, EventArgs e)
         {
-            string url = "https://docs.google.com/document/d/1qRyjYO0fhZQAdFL5vFgSz6H5AtVZflcTwC2yOMWvJPo/edit?usp=sharing";
-            Process.Start(url);
+            OpenHTML("help.html");
         }
         private void AboutProgram_Click(object sender, EventArgs e)
         {
-            string url = "https://github.com/StasyaShev4/Komp_lab1/blob/master/README.md";
-            Process.Start(url);
+            OpenHTML("О_программе.html");
         }
         private void butt_help_Click(object sender, EventArgs e)
         {
