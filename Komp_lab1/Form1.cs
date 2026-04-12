@@ -422,7 +422,7 @@ namespace Komp_lab1
 
                 foreach (Token token in tokens)
                 {
-                    if (token.Type == TokenType.Whitespace || token.Type == TokenType.EndOfFile)
+                    if (token.Type != TokenType.Unknown)
                         continue;
 
                     string tokenTypeDesc = GetTokenTypeString(token.Type);
@@ -433,15 +433,14 @@ namespace Komp_lab1
                         location,
                         tokenTypeDesc
                     );
+
                     dataGridView1.Rows[rowIndex].Tag = token;
 
-                    if (token.Type == TokenType.Unknown)
-                    {
-                        richTextBox1.SelectionStart = token.Position;
-                        richTextBox1.SelectionLength = token.Value.Length;
-                        richTextBox1.SelectionColor = Color.Red;
-                        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
-                    }
+                    richTextBox1.SelectionStart = token.Position;
+                    richTextBox1.SelectionLength = token.Value.Length;
+                    richTextBox1.SelectionColor = Color.Red;
+
+                    dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
                 }
                 label3.Text = $"Найдено токенов: {tokens.Count}";
             }
@@ -458,6 +457,68 @@ namespace Komp_lab1
         private void RunTSM_Click(object sender, EventArgs e)
         {
             RunLexicalAnalyzer();
+        }
+
+
+
+
+
+
+        private void OpenHTML(string file) 
+        {
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка: " + ex.Message);
+            }
+        }
+        private void постановкаЗадачиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("setting_the_task.html");            
+        }
+
+        private void грамматикаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("grammar.html");
+        }
+
+        private void классификацияГрамматикиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("classification_grammatics.html");
+        }
+
+        private void методАнализаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("method_of_analysis.html");
+        }
+
+        private void тестовыйПримерToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("Textexample.html");
+        }
+
+        private void списокЛитературыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("list_of_literature.html");
+        }
+
+        private void исходныйКодПрограммыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenHTML("source_code.html");
+        }
+
+        private void запуститьСкриптToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

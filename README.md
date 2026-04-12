@@ -50,13 +50,13 @@ struct UserProfile {
 
 ## Разработка грамматики
 ```
-1) <Struct> → struct <NameStruct>
-2) <NameStruct> → <Letter> <NameStruct> | "{" <Fields>
-3) <Fields> → string <Fild> | int <Fild>  | bool <Fild>  | float <Fild>  | array <Fild> | "}" <Final> 
-4) <Fild> → $<NameVariable>
-5) <NameVariable> → <Letter><NameVariable> | ";" <Fields>
-6) <Final> → ";"
-7) <Letter> → "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+1) <Struct> → 'struct' <NameStruct>
+2) <NameStruct> → <Letter> <NameStruct> | '{' <Fields>
+3) <Fields> → 'string' <Field> | 'int' <Fild>  | 'bool' <Field>  | 'float' <Field>  | 'array' <Field> | '}' <Final> 
+4) <Field> → '$'<NameVariable>
+5) <NameVariable> → <Letter><NameVariable> | ';' <Fields>
+6) <Final> → ';'
+7) <Letter> → 'a' | 'b' | ... | 'z' | 'A' | 'B' | ... | 'Z'
    
  - Z = ‹Struct›;
  - VT = {a, b, c, ..., z, A, B, C, ..., Z,";","{","}", }; 
@@ -66,25 +66,25 @@ struct UserProfile {
 ## Классификация грамматики (по Хомскому)
 Согласно классификации Хомского, грамматика `G[<Struct>]` является автоматной.
 Правила относящиеся  к классу **праворекурсивных продукций** вида:
-A → aB | a
+A → aB | a | ε
 
 ```
-1. ‹Struct› → struct ‹NameStruct›
-2. ‹NameStruct› → "{" ‹Fields›
-3. ‹Fields› → string ‹Fild›
-4. ‹Fields› → int ‹Fild›
-5. ‹Fields› → bool ‹Fild›
-6. ‹Fields› → float ‹Fild›
-7. ‹Fields› → array ‹Fild›
-8. ‹Fields› → "}" ‹Final›
-9. ‹Fild› → $‹NameVariable›
-10. ‹NameVariable› → ";" ‹Fields›
-11. ‹Final› → ";"
+1. ‹Struct› → 'struct' ‹NameStruct›
+2. ‹NameStruct› → '{' ‹Fields›
+3. ‹Fields› → 'string' ‹Fild›
+4. ‹Fields› → 'int' ‹Fild›
+5. ‹Fields› → 'bool' ‹Fild›
+6. ‹Fields› → 'float' ‹Fild›
+7. ‹Fields› → 'array' ‹Fild›
+8. ‹Fields› → '}' ‹Final›
+9. ‹Fild› → '$'‹NameVariable›
+10. ‹NameVariable› → ';' ‹Fields›
+11. ‹Final› → ';'
 ```
 
 ## Метод анализа
 Граф автоматной грамматики
-![alt text](1.png)
+![[1.png]](1.png)
 ## Диагностика и нейтрализация синтаксических ошибок.
 В данной работе используется алгоритм нейтрализации синтаксических ошибок методом Айронса.
 Алгоритм реализован на основе конечного автомата с восстановлением состояния через функцию `Recover()`.
@@ -106,7 +106,7 @@ struct UserProfile {
     array $roles;
 };
 ```
-![alt text](2.png)
+![[2.png]](2.png)
 
 ```
 struct UserProfile {
