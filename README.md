@@ -84,7 +84,7 @@ A → aB | a | ε
 
 ## Метод анализа
 Граф автоматной грамматики
-![[1.png]](1.png)
+![alt text](1.png)
 ## Диагностика и нейтрализация синтаксических ошибок.
 В данной работе используется алгоритм нейтрализации синтаксических ошибок методом Айронса.
 Алгоритм реализован на основе конечного автомата с восстановлением состояния через функцию `Recover()`.
@@ -106,7 +106,7 @@ struct UserProfile {
     array $roles;
 };
 ```
-![[2.png]](2.png)
+![alt text](2.png)
 
 ```
 struct UserProfile {
@@ -118,21 +118,21 @@ struct UserProfile {
 };
 ```
 
-![[3.png]](3.png)
+![alt text](3.png)
 
 ```
 struct U { };
 ```
-![[4.png]](4.png)
+![alt text](4.png)
 ```
 struct U { }
 ```
-![[5.png]](5.png)
+![alt text](5.png)
 
 ```
 struct U { }
 ```
-![[6.png]](6.png)
+![alt text](6.png)
 
 ```
  UserProfile {
@@ -143,4 +143,4 @@ struct U { }
      $roles;
 };
 ```
-![[7.png]](7.png)
+![alt text](7.png)
