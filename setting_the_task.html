@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Постановка задачи</title>
+    <style>
+        body {
+            background: #ffffff;
+            margin: 0;
+            padding: 30px;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #000000;
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 15px 0;
+        }
+
+        .example-list {
+            margin: 20px 0 20px 0;
+            padding-left: 0;
+            list-style-type: none;
+        }
+
+        .example-list li {
+            margin-bottom: 15px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            border-left: 4px solid #333;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+
+        .code-inline {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+        .section-title {
+            margin-top: 30px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .error-block pre {
+            border-left: 4px solid #d9534f;
+            background: #fff0f0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="content">
+
+    <h1>Постановка задачи</h1>
+
+    <p>
+       Структуры (классы) – это пользовательские типы данных, которые объединяют набор разнотипных элементов (свойств) в единый логический блок. 
+       В современном PHP для описания структур используются классы (class) с публичными свойствами, либо встроенная конструкция struct (доступная 
+       в PHP 8.2+ в виде расширений или через атрибуты), а также DTO (Data Transfer Objects).
+    </p>
+
+    <p>
+        Формат записи конструкции struct:
+    </p>
+
+    <pre>
+struct Имя {
+    тип $поле;
+    тип $поле;
+};
+    </pre>
+
+    <div class="section-title">Примеры:</div>
+
+    <ul class="example-list">
+
+        <li>
+            1. Пустая структура:
+            <pre>struct A {};</pre>
+        </li>
+
+        <li>
+            2. Одно поле:
+            <pre>struct Point { int $x; };</pre>
+        </li>
+
+        <li>
+            3. Несколько полей:
+            <pre>
+struct Point {
+    int $x;
+    int $y;
+};
+            </pre>
+        </li>
+
+        <li>
+            4. Разные типы:
+            <pre>
+struct Employee {
+    string $name;
+    int $age;
+    bool $active;
+};
+            </pre>
+        </li>
+
+        <li>
+            5. Большая структура:
+            <pre>
+struct User {
+    string $login;
+    string $password;
+    bool $isAdmin;
+    int $id;
+};
+            </pre>
+        </li>
+
+    </ul>
+
+    <p class="section-title">
+        В связи с разработанной автоматной грамматикой G[&lt;Struct&gt;] 
+        синтаксический анализатор считает корректными следующие записи:
+    </p>
+
+    <ul class="example-list">
+        <li><span class="code-inline">1. struct A {};</span></li>
+        <li><span class="code-inline">2. struct Point { int $x; int $y; };</span></li>
+        <li><span class="code-inline">3. struct User { string $name; bool $active; };</span></li>
+        <li><span class="code-inline">4. struct Test { float $a; array $b; };</span></li>
+    </ul>
+
+</div>
+
+</body>
+</html>
