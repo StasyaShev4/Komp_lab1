@@ -13,22 +13,30 @@ namespace Komp_lab1
         private int position = 0;
         private int line = 1;
 
+        private readonly HashSet<char> operators = new HashSet<char>
+        {
+            '='
+        };
+        private readonly HashSet<string> booleanLiterals = new HashSet<string>
+        {
+            "true", "false"
+        };
         private readonly HashSet<string> keywords = new HashSet<string> {
             "string", "int", "bool", "array", "float", "struct"
         };
         private readonly HashSet<string> separators = new HashSet<string> {
-            "{", "}", ";"
+            "{", "}", ";", "[" , "]", ","
         };
-        public LexicalAnalyzer(string text) 
+        public LexicalAnalyzer(string text)
         {
             input = text;
         }
 
-        public List<Token> Analize() 
+        public List<Token> Analize()
         {
             List<Token> tokens = new List<Token>();
 
-            while (position < input.Length) 
+            while (position < input.Length)
             {
                 char c = input[position];
                 if (c == '\r' || c == '\n')
@@ -55,12 +63,22 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
+                if (c == '\'' || c == '\"')
+                {
+                    tokens.Add(ReadString());
+                    continue;
+                }
                 if (IsLatinLetter(c) || c == '_')
                 {
                     tokens.Add(ReadIndentifier());
                     continue;
                 }
-                if (c == '$') 
+                if (char.IsDigit(c) || (c == '-' && position + 1 < input.Length && char.IsDigit(input[position + 1])))
+                {
+                    tokens.Add(ReadNumber());
+                    continue;
+                }
+                if (c == '$')
                 {
                     tokens.Add(ReadVariable());
                     continue;
@@ -71,22 +89,28 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
+                if (operators.Contains(c))
+                {
+                    tokens.Add(new Token(TokenType.Operator, c.ToString(), position++, line));
+                    continue;
+                }
                 tokens.Add(Unknown());
-                
+
             }
             tokens.Add(new Token(TokenType.EndOfFile, "EndOfFile", position, line));
             return tokens;
         }
-        Token Unknown() 
+        Token Unknown()
         {
             int start = position, startLP = line;
-            
+            //position++;
+
             while (position < input.Length &&
                 input[position] != ' ' &&
                 input[position] != '\n' &&
                 input[position] != '\r' &&
                 !separators.Contains(input[position].ToString()))
-            { 
+            {
                 position++;
             }
             string value = input.Substring(start, position - start);
@@ -96,7 +120,7 @@ namespace Komp_lab1
         {
             int start = position, startLP = line;
 
-            position ++;
+            position++;
 
             while (position < input.Length && char.IsLetterOrDigit(input[position]))
             {
@@ -107,10 +131,10 @@ namespace Komp_lab1
             return new Token(TokenType.Variable, var, start, startLP);
         }
 
-        Token ReadIndentifier() 
+        Token ReadIndentifier()
         {
             int start = position, startLP = line;
-            while (position < input.Length && char.IsLetterOrDigit(input[position])) 
+            while (position < input.Length && char.IsLetterOrDigit(input[position]))
             {
                 position++;
             }
@@ -118,8 +142,75 @@ namespace Komp_lab1
 
             if (keywords.Contains(word))
                 return new Token(TokenType.Keyword, word, start, startLP);
+            if (booleanLiterals.Contains(word))
+                return new Token(TokenType.BooleanLiteral, word, start, line);
 
             return new Token(TokenType.Identifier, word, start, startLP);
+        }
+        Token ReadNumber()
+        {
+            int start = position;
+            bool isFloat = false;
+
+            if (input[position] == '-')
+            {
+                position++;
+            }
+
+            while (position < input.Length &&
+            (char.IsDigit(input[position]) || input[position] == '.'))
+            {
+                if (input[position] == '.')
+                    isFloat = true;
+
+                position++;
+            }
+
+            if (position < input.Length &&
+                (input[position] == 'e' || input[position] == 'E'))
+            {
+                isFloat = true; 
+                position++;
+
+                if (position < input.Length &&
+                    (input[position] == '+' || input[position] == '-'))
+                {
+                    position++;
+                }
+
+                while (position < input.Length && char.IsDigit(input[position]))
+                {
+                    position++;
+                }
+            }
+
+            string number = input.Substring(start, position - start);
+
+            if (isFloat)
+                return new Token(TokenType.FloatLiteral, number, start, line);
+
+            return new Token(TokenType.IntegerLiteral, number, start, line);
+        }
+        Token ReadString()
+        {
+            int start = position;
+            char quote = input[position];
+            position++;
+
+            while (position < input.Length && input[position] != quote)
+            {
+                position++;
+            }
+            if (position >= input.Length)
+            {
+                string value = input.Substring(start, input.Length - start);
+                return new Token(TokenType.Unknown, value, start, line);
+            }
+            position++;
+
+            string str = input.Substring(start, position - start);
+
+            return new Token(TokenType.StringLiteral, str, start, line);
         }
         private bool IsLatinLetter(char c)
         {
