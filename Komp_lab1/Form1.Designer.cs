@@ -50,6 +50,7 @@
             this.saveTSM = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveAsTSM = new System.Windows.Forms.ToolStripMenuItem();
             this.Output = new System.Windows.Forms.ToolStripMenuItem();
+            this.ОткрытьплохойпримерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сохранитьФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelTSM = new System.Windows.Forms.ToolStripMenuItem();
             this.repeatTSM = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +81,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.открытьПримерСОшибкамиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -265,7 +267,9 @@
             this.openTSM,
             this.saveTSM,
             this.SaveAsTSM,
-            this.Output});
+            this.Output,
+            this.ОткрытьплохойпримерToolStripMenuItem,
+            this.открытьПримерСОшибкамиToolStripMenuItem});
             this.открытьФайлToolStripMenuItem.Name = "открытьФайлToolStripMenuItem";
             this.открытьФайлToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
             this.открытьФайлToolStripMenuItem.Text = "Файл";
@@ -273,37 +277,44 @@
             // createTSM
             // 
             this.createTSM.Name = "createTSM";
-            this.createTSM.Size = new System.Drawing.Size(201, 26);
+            this.createTSM.Size = new System.Drawing.Size(298, 26);
             this.createTSM.Text = "Создать ";
             this.createTSM.Click += new System.EventHandler(this.createTSM_Click);
             // 
             // openTSM
             // 
             this.openTSM.Name = "openTSM";
-            this.openTSM.Size = new System.Drawing.Size(201, 26);
+            this.openTSM.Size = new System.Drawing.Size(298, 26);
             this.openTSM.Text = "Открыть";
             this.openTSM.Click += new System.EventHandler(this.openTSM_Click);
             // 
             // saveTSM
             // 
             this.saveTSM.Name = "saveTSM";
-            this.saveTSM.Size = new System.Drawing.Size(201, 26);
+            this.saveTSM.Size = new System.Drawing.Size(298, 26);
             this.saveTSM.Text = "Сохранить";
             this.saveTSM.Click += new System.EventHandler(this.saveTSM_Click);
             // 
             // SaveAsTSM
             // 
             this.SaveAsTSM.Name = "SaveAsTSM";
-            this.SaveAsTSM.Size = new System.Drawing.Size(201, 26);
+            this.SaveAsTSM.Size = new System.Drawing.Size(298, 26);
             this.SaveAsTSM.Text = "Сохранить как...";
             this.SaveAsTSM.Click += new System.EventHandler(this.SaveAsTSM_Click);
             // 
             // Output
             // 
             this.Output.Name = "Output";
-            this.Output.Size = new System.Drawing.Size(201, 26);
+            this.Output.Size = new System.Drawing.Size(298, 26);
             this.Output.Text = "Выход";
             this.Output.Click += new System.EventHandler(this.Output_Click);
+            // 
+            // ОткрытьплохойпримерToolStripMenuItem
+            // 
+            this.ОткрытьплохойпримерToolStripMenuItem.Name = "ОткрытьплохойпримерToolStripMenuItem";
+            this.ОткрытьплохойпримерToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.ОткрытьплохойпримерToolStripMenuItem.Text = "Открыть верный пример";
+            this.ОткрытьплохойпримерToolStripMenuItem.Click += new System.EventHandler(this.тестToolStripMenuItem_Click);
             // 
             // сохранитьФайлToolStripMenuItem
             // 
@@ -383,7 +394,6 @@
             this.Text_ToolStripMenuItem.Name = "Text_ToolStripMenuItem";
             this.Text_ToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
             this.Text_ToolStripMenuItem.Text = "Текст";
-            this.Text_ToolStripMenuItem.Click += new System.EventHandler(this.запуститьСкриптToolStripMenuItem_Click);
             // 
             // постановкаЗадачиToolStripMenuItem
             // 
@@ -454,14 +464,14 @@
             // CallingHelp
             // 
             this.CallingHelp.Name = "CallingHelp";
-            this.CallingHelp.Size = new System.Drawing.Size(224, 26);
+            this.CallingHelp.Size = new System.Drawing.Size(197, 26);
             this.CallingHelp.Text = "Вызов справки";
             this.CallingHelp.Click += new System.EventHandler(this.CallingHelp_Click);
             // 
             // AboutProgram
             // 
             this.AboutProgram.Name = "AboutProgram";
-            this.AboutProgram.Size = new System.Drawing.Size(224, 26);
+            this.AboutProgram.Size = new System.Drawing.Size(197, 26);
             this.AboutProgram.Text = "О программе";
             this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
             // 
@@ -472,7 +482,7 @@
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox1.Location = new System.Drawing.Point(98, 0);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(784, 269);
+            this.richTextBox1.Size = new System.Drawing.Size(784, 182);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -484,7 +494,7 @@
             this.richTextBox2.Location = new System.Drawing.Point(0, 0);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox2.Size = new System.Drawing.Size(98, 269);
+            this.richTextBox2.Size = new System.Drawing.Size(98, 182);
             this.richTextBox2.TabIndex = 13;
             this.richTextBox2.Text = "";
             // 
@@ -509,7 +519,7 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(882, 152);
+            this.dataGridView1.Size = new System.Drawing.Size(882, 239);
             this.dataGridView1.TabIndex = 0;
             // 
             // openFileDialog1
@@ -535,7 +545,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Panel2.Controls.Add(this.panel2);
             this.splitContainer1.Size = new System.Drawing.Size(882, 457);
-            this.splitContainer1.SplitterDistance = 269;
+            this.splitContainer1.SplitterDistance = 182;
             this.splitContainer1.TabIndex = 14;
             // 
             // panel2
@@ -565,6 +575,13 @@
             this.label2.Size = new System.Drawing.Size(44, 16);
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
+            // 
+            // открытьПримерСОшибкамиToolStripMenuItem
+            // 
+            this.открытьПримерСОшибкамиToolStripMenuItem.Name = "открытьПримерСОшибкамиToolStripMenuItem";
+            this.открытьПримерСОшибкамиToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.открытьПримерСОшибкамиToolStripMenuItem.Text = "Открыть пример с ошибками";
+            this.открытьПримерСОшибкамиToolStripMenuItem.Click += new System.EventHandler(this.открытьПримерСОшибкамиToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -644,6 +661,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripMenuItem ОткрытьплохойпримерToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem открытьПримерСОшибкамиToolStripMenuItem;
     }
 }
 

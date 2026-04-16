@@ -31,8 +31,26 @@ namespace Komp_lab1
             richTextBox1.PreviewKeyDown += RichTextBox1_PreviewKeyDown;
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
             dataGridView1.CellClick += DataGridView1_CellClick;
+            dataGridView1.RowPostPaint += DataGridView1_RowPostPaint;
             LineNumbers();
             DGInit();
+        }
+        private void DataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            var grid = sender as DataGridView;
+
+            string rowNumber = (e.RowIndex + 1).ToString();
+
+            using (SolidBrush brush = new SolidBrush(grid.RowHeadersDefaultCellStyle.ForeColor))
+            {
+                e.Graphics.DrawString(
+                    rowNumber,
+                    grid.Font,
+                    brush,
+                    e.RowBounds.Left + 15,
+                    e.RowBounds.Top + 4
+                );
+            }
         }
         private void DGInit() 
         {
@@ -65,6 +83,7 @@ namespace Komp_lab1
             dataGridView1.Columns["Message"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
+            dataGridView1.RowHeadersWidth = 60;
         }
         private void LineNumbers()
         {
@@ -236,8 +255,12 @@ namespace Komp_lab1
         }
         private void butt_open_file_Click(object sender, EventArgs e)
         {
+            openFileDialog1.InitialDirectory = Application.StartupPath;
+            openFileDialog1.FileName = "test.txt";
+
             if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
+
             filename = openFileDialog1.FileName;
             string fileText = System.IO.File.ReadAllText(filename);
             richTextBox1.Clear();
@@ -250,7 +273,14 @@ namespace Komp_lab1
         }
         private void openTSM_Click(object sender, EventArgs e)
         {
-            butt_open_file_Click(sender, e);
+            if (openFileDialog1.ShowDialog() == DialogResult.Cancel) 
+                return; 
+
+            filename = openFileDialog1.FileName; 
+            string fileText = System.IO.File.ReadAllText(filename); 
+            richTextBox1.Clear(); 
+            richTextBox1.Text = fileText; 
+            label1.Text = filename;
         }
         private void SaveAsTSM_Click(object sender, EventArgs e)
         {
@@ -418,29 +448,6 @@ namespace Komp_lab1
                 }
                 label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
 
-                foreach (Token token in tokens)
-                {
-                    if (token.Type != TokenType.Unknown)
-                        continue;
-
-                    string tokenTypeDesc = GetTokenTypeString(token.Type);
-                    string location = GetLocation(token.Position, token.Value, token.Line);
-
-                    int rowIndex = dataGridView1.Rows.Add(
-                        token.Value,
-                        location,
-                        tokenTypeDesc
-                    );
-
-                    dataGridView1.Rows[rowIndex].Tag = token;
-
-                    richTextBox1.SelectionStart = token.Position;
-                    richTextBox1.SelectionLength = token.Value.Length;
-                    richTextBox1.SelectionColor = Color.Red;
-
-                    dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
-                }
-                label3.Text = $"Найдено токенов: {tokens.Count}";
             }
             catch (Exception ex)
             {
@@ -514,9 +521,14 @@ namespace Komp_lab1
             OpenHTML("source_code.html");
         }
 
-        private void запуститьСкриптToolStripMenuItem_Click(object sender, EventArgs e)
+        private void тестToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            richTextBox1.Text = "struct Employee {\r\n    string $firstName;\r\n    string $lastName;\r\n    int $salary;\r\n    bool $fullTime;\r\n};";
+        }
 
+        private void открытьПримерСОшибкамиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "struc UserProfile \r\n    string $username;\r\n    int age;\r\n    ft $rating;\r\n    bool $;\r\n     $roles;\r\n};";
         }
     }
 }

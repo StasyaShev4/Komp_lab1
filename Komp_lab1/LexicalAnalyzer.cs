@@ -80,7 +80,6 @@ namespace Komp_lab1
         Token Unknown() 
         {
             int start = position, startLP = line;
-            //position++;
             
             while (position < input.Length &&
                 input[position] != ' ' &&

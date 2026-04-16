@@ -53,9 +53,11 @@ namespace Komp_lab1
         public void ParseOneStructFSM()
         {
             State state = State.S0;
-            
+
             while (state != State.S8)
             {
+
+                var flag = Current.Type;
                 switch (state)
                 {
                     case State.S0:
@@ -67,7 +69,27 @@ namespace Komp_lab1
                         else
                         {
                             Error("Ожидалось 'struct'");
-                            state = State.ERROR;
+
+                            if (position + 1 < tokens.Count && tokens[position + 1].Type == TokenType.Identifier)
+                            {
+                                if (position + 2 < tokens.Count &&
+                                    tokens[position + 2].Type == TokenType.Separator &&
+                                    tokens[position + 2].Value == "{")
+                                {
+                                    Next();
+                                    state = State.S1;
+                                }
+                                else
+                                {
+                                    position += 2;
+                                    Error("Ожидалась '{' после имени структуры");
+                                    state = State.ERROR;
+                                }
+                            }
+                            else
+                            {
+                                state = State.ERROR;
+                            }
                         }
                         break;
 
@@ -130,7 +152,28 @@ namespace Komp_lab1
                         else
                         {
                             Error("Ожидался тип переменной или '}'");
-                            state = State.ERROR;
+
+                            if (position + 1 < tokens.Count && tokens[position + 1].Type == TokenType.Variable)
+                            {
+                                if (position + 2 < tokens.Count &&
+                                    tokens[position + 2].Type == TokenType.Separator &&
+                                    tokens[position + 2].Value == ";")
+                                {
+                                    Next();
+                                    state = State.S4;
+                                }
+                                else
+                                {
+                                    position += 2;
+                                    Error("Ожидалась ';' после имени переменнной");
+                                    state = State.ERROR;
+                                }
+                            }
+                            else 
+                            {
+                                state = State.ERROR;
+                            }
+
                         }
                         break;
 
@@ -175,6 +218,11 @@ namespace Komp_lab1
 
                     case State.ERROR:
                         var result = Recover();
+
+                        if (flag == TokenType.Identifier)
+                        {
+
+                        }
 
                         switch (result)
                         {
@@ -221,6 +269,12 @@ namespace Komp_lab1
         {
             while (Current.Type != TokenType.EndOfFile)
             {
+                if (Current.Type == TokenType.Separator && Current.Value == "{")
+                {
+                    Next(); 
+                    return RecoverResult.ToFields;
+                }
+
                 if (Current.Type == TokenType.Separator && Current.Value == "}")
                 {
                     Next();
