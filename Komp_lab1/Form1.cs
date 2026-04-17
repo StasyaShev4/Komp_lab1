@@ -376,39 +376,6 @@ namespace Komp_lab1
             if (!CheckingForChanges())
                 e.Cancel = true;
         }
-
-
-        private string GetTokenTypeString(TokenType type) 
-        {
-            switch (type)
-            {
-                case TokenType.Keyword:
-                    return "Ключевое слово";
-                case TokenType.Identifier:
-                    return "Идентификатор";
-                case TokenType.Variable:
-                    return "Переменная";
-                case TokenType.Separator:
-                    return "Разделитель";
-                case TokenType.Whitespace:
-                    return "Разделитель (пробел)";
-                case TokenType.Unknown:
-                    return "Неизвестный";
-                default:
-                    return type.ToString();
-            }
-        }
-        private string GetLocation(int position, string value, int line)
-        {
-            int length = value.Length;
-            if (value == " " || value == "\t" || value == "\n" || value == "\r" || value == "(пробел)")
-                length = 1;
-
-            if (length == 1)
-                return $"строка {line}, позиция {position + 1}";
-            else
-                return $"строка {line}, {position + 1}-{position + length}";
-        }
         private void RunLexicalAnalyzer()
         {
             richTextBox1.SelectAll();
@@ -429,8 +396,10 @@ namespace Komp_lab1
                 List<Token> tokens = analyzer.Analize();
                 dataGridView1.Rows.Clear();
 
-                Parser parser = new Parser(tokens);
+                Parser parser = new Parser(tokens, richTextBox3);
                 parser.Parse();
+                richTextBox3.Clear();
+                parser.PrintAST();
 
                 dataGridView1.Rows.Clear();
 
@@ -447,6 +416,8 @@ namespace Komp_lab1
                     dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightPink;
                 }
                 label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
+
+                label3.Text = "AST в текстовом представлении";
 
             }
             catch (Exception ex)
