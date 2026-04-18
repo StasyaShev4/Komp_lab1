@@ -445,7 +445,7 @@ namespace Komp_lab1
 
 
 
-        private void OpenHTML(string file)
+        private void OpenHTML(string file) 
         {
             try
             {

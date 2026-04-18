@@ -9,7 +9,8 @@ using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
 
 namespace Komp_lab1
-{    class SyntaxError
+{
+    class SyntaxError
     {
         public string Fragment;
         public string Message;
@@ -31,14 +32,14 @@ namespace Komp_lab1
     internal class Parser
     {
         private List<Token> tokens;
-        private int position =0;
-        public List<SyntaxError> Errors = new List<SyntaxError> ();
+        private int position = 0;
+        public List<SyntaxError> Errors = new List<SyntaxError>();
 
         public List<StructDeclNode> Structs = new List<StructDeclNode>();
         StructDeclNode currentStruct;
         FieldDeclNode currentField;
         private RichTextBox output;
-        
+
         string currentType;
         string currentVarName;
 
@@ -67,7 +68,7 @@ namespace Komp_lab1
             tokens = newTokens;
             position = 0;
         }
-        public void Parse() 
+        public void Parse()
         {
             RemoveWhitespaceTokens();
 
@@ -210,7 +211,7 @@ namespace Komp_lab1
                                     state = State.ERROR;
                                 }
                             }
-                            else 
+                            else
                             {
                                 state = State.ERROR;
                             }
@@ -233,14 +234,14 @@ namespace Komp_lab1
                             {
                                 currentStruct.Fields.Add(currentField);
                             }
-                            
+
                             Next();
                             if (Match(TokenType.Operator, "="))
                             {
                                 Next();
                                 state = State.S5;
                             }
-                            else 
+                            else
                             {
                                 state = State.S6;
                             }
@@ -265,7 +266,7 @@ namespace Komp_lab1
                         {
                             string value = Current.Value;
                             CheckType(currentType, value);
-                            if (!hasErrorInStruct  && currentField != null)
+                            if (!hasErrorInStruct && currentField != null)
                             {
                                 currentField.Value = value;
                             }
@@ -280,7 +281,7 @@ namespace Komp_lab1
                             Next();
                             state = State.S3;
                         }
-                        else 
+                        else
                         {
                             Error("Ожидался ';' после переменной");
                             state = State.ERROR;
@@ -318,7 +319,7 @@ namespace Komp_lab1
                                 state = State.S3;
                                 break;
 
-                            case RecoverResult.ToDefault: 
+                            case RecoverResult.ToDefault:
                                 state = State.S5;
                                 break;
 
@@ -518,7 +519,7 @@ namespace Komp_lab1
                 .Replace("\"", "\\\"");
         }
 
-        private void Next() 
+        private void Next()
         {
             position++;
         }
@@ -544,7 +545,7 @@ namespace Komp_lab1
             {
                 if (Current.Type == TokenType.Separator && Current.Value == "{")
                 {
-                    Next(); 
+                    Next();
                     return RecoverResult.ToFields;
                 }
 
