@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,16 @@ namespace Komp_lab1
         public FormAST()
         {
             InitializeComponent();
+        }
+        public void LoadImage(string path)
+        {
+            if (File.Exists(path))
+            {
+                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    pictureBox1.Image = Image.FromStream(stream);
+                }
+            }
         }
 
         public void BuildTree(List<StructDeclNode> structs)

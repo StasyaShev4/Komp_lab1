@@ -474,6 +474,49 @@ namespace Komp_lab1
             }
         }
 
+        public string GenerateDot()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("digraph AST {");
+            sb.AppendLine("node [shape=box, style=filled, fillcolor=lightblue];");
+
+            int id = 0;
+
+            foreach (var s in Structs)
+            {
+                int structId = id++;
+                sb.AppendLine($"node{structId} [label=\"Struct\\n{s.Name}\"];");
+
+                foreach (var f in s.Fields)
+                {
+                    int fieldId = id++;
+
+                    string safeName = Escape(f.Name);
+                    string safeType = Escape(f.Type);
+
+                    string label = $"Field\\nName: {safeName}\\nType: {safeType}";
+
+                    if (f.Value != null)
+                    {
+                        string safeValue = Escape(f.Value);
+                        label += $"\\nValue: {safeValue}";
+                    }
+
+                    sb.AppendLine($"node{fieldId} [label=\"{label}\", fillcolor=lightgreen];");
+                    sb.AppendLine($"node{structId} -> node{fieldId};");
+                }
+            }
+
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+        string Escape(string s)
+        {
+            return s
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"");
+        }
 
         private void Next() 
         {

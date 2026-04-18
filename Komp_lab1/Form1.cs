@@ -37,6 +37,8 @@ namespace Komp_lab1
             dataGridView1.RowPostPaint += DataGridView1_RowPostPaint;
             LineNumbers();
             DGInit();
+            
+            richTextBox1.Text = "struct User {\r\n    int $id = 314;\r\n    float $ab = 3.14;\r\n    string $name = \"Guest\";\r\n    bool $isAdmin = false;\r\n};";
         }
         private void DataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
@@ -512,10 +514,39 @@ namespace Komp_lab1
                 MessageBox.Show("Сначала выполните анализ!");
                 return;
             }
+            try
+            {
+                string dot = parser.GenerateDot();
 
-            FormAST form = new FormAST();
-            form.BuildTree(parser.Structs);
-            form.Show();
+                string dotPath = Path.Combine(Environment.CurrentDirectory, "ast.dot");
+                string pngPath = Path.Combine(Environment.CurrentDirectory, "ast.png");
+
+                File.WriteAllText(dotPath, dot);
+
+                Process p = new Process();
+                p.StartInfo.FileName = @"C:\Program Files\Graphviz\bin\dot.exe";
+                p.StartInfo.Arguments = $"-Tpng \"{dotPath}\" -o \"{pngPath}\"";
+                p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.UseShellExecute = false;
+                p.Start();
+                p.WaitForExit();
+
+                //Process.Start(new ProcessStartInfo
+                //{
+                //    FileName = pngPath,
+                //    UseShellExecute = true
+                //});
+
+                FormAST form = new FormAST();
+                form.BuildTree(parser.Structs);
+                form.LoadImage(pngPath);
+                form.Show();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка Graphviz: " + ex.Message);
+            }
         }
     }
 }

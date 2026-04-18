@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.AST = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.butt_about_program = new System.Windows.Forms.Button();
             this.butt_help = new System.Windows.Forms.Button();
@@ -80,13 +82,13 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.AST = new System.Windows.Forms.Button();
+            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -100,6 +102,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -124,6 +127,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(882, 96);
             this.panel1.TabIndex = 0;
+            // 
+            // AST
+            // 
+            this.AST.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.AST.Location = new System.Drawing.Point(712, 31);
+            this.AST.Name = "AST";
+            this.AST.Size = new System.Drawing.Size(158, 40);
+            this.AST.TabIndex = 14;
+            this.AST.Text = "Показать AST";
+            this.AST.UseVisualStyleBackColor = true;
+            this.AST.Click += new System.EventHandler(this.AST_Click);
             // 
             // label1
             // 
@@ -282,7 +296,7 @@
             this.ОткрытьплохойпримерToolStripMenuItem,
             this.открытьПримерСОшибкамиToolStripMenuItem});
             this.открытьФайлToolStripMenuItem.Name = "открытьФайлToolStripMenuItem";
-            this.открытьФайлToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
+            this.открытьФайлToolStripMenuItem.Size = new System.Drawing.Size(59, 26);
             this.открытьФайлToolStripMenuItem.Text = "Файл";
             // 
             // createTSM
@@ -346,55 +360,55 @@
             this.removeTSM,
             this.selectallTSM});
             this.сохранитьФайлToolStripMenuItem.Name = "сохранитьФайлToolStripMenuItem";
-            this.сохранитьФайлToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+            this.сохранитьФайлToolStripMenuItem.Size = new System.Drawing.Size(74, 26);
             this.сохранитьФайлToolStripMenuItem.Text = "Правка";
             // 
             // cancelTSM
             // 
             this.cancelTSM.Name = "cancelTSM";
-            this.cancelTSM.Size = new System.Drawing.Size(224, 26);
+            this.cancelTSM.Size = new System.Drawing.Size(190, 26);
             this.cancelTSM.Text = "Отмена";
             this.cancelTSM.Click += new System.EventHandler(this.cancelTSM_Click);
             // 
             // repeatTSM
             // 
             this.repeatTSM.Name = "repeatTSM";
-            this.repeatTSM.Size = new System.Drawing.Size(224, 26);
+            this.repeatTSM.Size = new System.Drawing.Size(190, 26);
             this.repeatTSM.Text = "Вернуть";
             this.repeatTSM.Click += new System.EventHandler(this.repeatTSM_Click);
             // 
             // cutTSM
             // 
             this.cutTSM.Name = "cutTSM";
-            this.cutTSM.Size = new System.Drawing.Size(224, 26);
+            this.cutTSM.Size = new System.Drawing.Size(190, 26);
             this.cutTSM.Text = "Вырезать";
             this.cutTSM.Click += new System.EventHandler(this.cutTSM_Click);
             // 
             // copyTSM
             // 
             this.copyTSM.Name = "copyTSM";
-            this.copyTSM.Size = new System.Drawing.Size(224, 26);
+            this.copyTSM.Size = new System.Drawing.Size(190, 26);
             this.copyTSM.Text = "Копировать";
             this.copyTSM.Click += new System.EventHandler(this.copyTSM_Click);
             // 
             // pasteTSM
             // 
             this.pasteTSM.Name = "pasteTSM";
-            this.pasteTSM.Size = new System.Drawing.Size(224, 26);
+            this.pasteTSM.Size = new System.Drawing.Size(190, 26);
             this.pasteTSM.Text = "Вставить";
             this.pasteTSM.Click += new System.EventHandler(this.pasteTSM_Click);
             // 
             // removeTSM
             // 
             this.removeTSM.Name = "removeTSM";
-            this.removeTSM.Size = new System.Drawing.Size(224, 26);
+            this.removeTSM.Size = new System.Drawing.Size(190, 26);
             this.removeTSM.Text = "Удалить";
             this.removeTSM.Click += new System.EventHandler(this.removeTSM_Click);
             // 
             // selectallTSM
             // 
             this.selectallTSM.Name = "selectallTSM";
-            this.selectallTSM.Size = new System.Drawing.Size(224, 26);
+            this.selectallTSM.Size = new System.Drawing.Size(190, 26);
             this.selectallTSM.Text = "Выделить все ";
             this.selectallTSM.Click += new System.EventHandler(this.selectallTSM_Click);
             // 
@@ -410,7 +424,7 @@
             this.списокЛитературыToolStripMenuItem,
             this.исходныйКодПрограммыToolStripMenuItem});
             this.Text_ToolStripMenuItem.Name = "Text_ToolStripMenuItem";
-            this.Text_ToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
+            this.Text_ToolStripMenuItem.Size = new System.Drawing.Size(59, 26);
             this.Text_ToolStripMenuItem.Text = "Текст";
             // 
             // постановкаЗадачиToolStripMenuItem
@@ -466,7 +480,7 @@
             // 
             this.RunTSM.BackColor = System.Drawing.Color.Transparent;
             this.RunTSM.Name = "RunTSM";
-            this.RunTSM.Size = new System.Drawing.Size(55, 24);
+            this.RunTSM.Size = new System.Drawing.Size(55, 26);
             this.RunTSM.Text = "Пуск";
             this.RunTSM.Click += new System.EventHandler(this.RunTSM_Click);
             // 
@@ -476,7 +490,7 @@
             this.CallingHelp,
             this.AboutProgram});
             this.справкаToolStripMenuItem.Name = "справкаToolStripMenuItem";
-            this.справкаToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
+            this.справкаToolStripMenuItem.Size = new System.Drawing.Size(81, 26);
             this.справкаToolStripMenuItem.Text = "Справка";
             // 
             // CallingHelp
@@ -522,14 +536,14 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 32);
@@ -575,6 +589,15 @@
             this.panel2.Size = new System.Drawing.Size(556, 32);
             this.panel2.TabIndex = 2;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 16);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "label2";
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -584,15 +607,6 @@
             this.label3.Size = new System.Drawing.Size(64, 25);
             this.label3.TabIndex = 2;
             this.label3.Text = "label3";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 16);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "label2";
             // 
             // splitContainer2
             // 
@@ -632,17 +646,6 @@
             this.panel3.Size = new System.Drawing.Size(322, 29);
             this.panel3.TabIndex = 1;
             // 
-            // AST
-            // 
-            this.AST.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.AST.Location = new System.Drawing.Point(712, 31);
-            this.AST.Name = "AST";
-            this.AST.Size = new System.Drawing.Size(158, 40);
-            this.AST.TabIndex = 14;
-            this.AST.Text = "Показать AST";
-            this.AST.UseVisualStyleBackColor = true;
-            this.AST.Click += new System.EventHandler(this.AST_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -671,6 +674,7 @@
             this.splitContainer2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -734,6 +738,7 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.RichTextBox richTextBox3;
         private System.Windows.Forms.Button AST;
+        private System.Windows.Forms.BindingSource bindingSource1;
     }
 }
 
