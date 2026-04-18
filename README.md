@@ -132,4 +132,4 @@ struct Product {
     array $tags = [];
 };
 ```
-![[ast.png]](7.png)
+![](7.png)
