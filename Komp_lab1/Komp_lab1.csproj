@@ -53,6 +53,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAST.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAST.Designer.cs">
+      <DependentUpon>FormAST.cs</DependentUpon>
+    </Compile>
     <Compile Include="LexicalAnalyzer.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
@@ -60,6 +66,9 @@
     <Compile Include="Token.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAST.resx">
+      <DependentUpon>FormAST.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

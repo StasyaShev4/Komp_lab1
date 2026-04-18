@@ -13,9 +13,12 @@ namespace Komp_lab1
 {
     public partial class Form1 : Form
     {
+
+        private Parser parser;
         Correction correction;
         string filename;
         [DllImport("user32.dll")]
+
         private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
         private const int WM_VSCROLL = 0x115;
         public Form1()
@@ -52,7 +55,7 @@ namespace Komp_lab1
                 );
             }
         }
-        private void DGInit() 
+        private void DGInit()
         {
             DataGridViewColumn[] columns = new DataGridViewColumn[]
             {
@@ -121,7 +124,7 @@ namespace Komp_lab1
         {
             if (e.KeyCode == Keys.Tab)
             {
-                e.IsInputKey = true; 
+                e.IsInputKey = true;
             }
         }
         private void RichTextBox1_KeyDown(object sender, KeyEventArgs e)
@@ -162,7 +165,7 @@ namespace Komp_lab1
             RichTextBox1_VScroll(null, null);
         }
 
-        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e) 
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
@@ -220,9 +223,9 @@ namespace Komp_lab1
 
             return true;
         }
-        private bool IsFileContentChanged() 
+        private bool IsFileContentChanged()
         {
-            try 
+            try
             {
                 if (filename == null || filename == "")
                 {
@@ -246,7 +249,7 @@ namespace Komp_lab1
             richTextBox1.Clear();
         }
         private void butt_save_file_Click(object sender, EventArgs e)
-        {            
+        {
             if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
             filename = saveFileDialog1.FileName;
@@ -273,13 +276,13 @@ namespace Komp_lab1
         }
         private void openTSM_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.Cancel) 
-                return; 
+            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
 
-            filename = openFileDialog1.FileName; 
-            string fileText = System.IO.File.ReadAllText(filename); 
-            richTextBox1.Clear(); 
-            richTextBox1.Text = fileText; 
+            filename = openFileDialog1.FileName;
+            string fileText = System.IO.File.ReadAllText(filename);
+            richTextBox1.Clear();
+            richTextBox1.Text = fileText;
             label1.Text = filename;
         }
         private void SaveAsTSM_Click(object sender, EventArgs e)
@@ -367,7 +370,7 @@ namespace Komp_lab1
         {
             correction.Select_all();
         }
-         private void Output_Click(object sender, EventArgs e)
+        private void Output_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -396,7 +399,7 @@ namespace Komp_lab1
                 List<Token> tokens = analyzer.Analize();
                 dataGridView1.Rows.Clear();
 
-                Parser parser = new Parser(tokens, richTextBox3);
+                parser = new Parser(tokens, richTextBox3);
                 parser.Parse();
                 richTextBox3.Clear();
                 parser.PrintAST();
@@ -440,7 +443,7 @@ namespace Komp_lab1
 
 
 
-        private void OpenHTML(string file) 
+        private void OpenHTML(string file)
         {
             try
             {
@@ -459,7 +462,7 @@ namespace Komp_lab1
         }
         private void постановкаЗадачиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenHTML("setting_the_task.html");            
+            OpenHTML("setting_the_task.html");
         }
 
         private void грамматикаToolStripMenuItem_Click(object sender, EventArgs e)
@@ -500,6 +503,19 @@ namespace Komp_lab1
         private void открытьПримерСОшибкамиToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Text = "struc UserProfile \r\n    string $username;\r\n    int age;\r\n    ft $rating;\r\n    bool $;\r\n     $roles;\r\n};";
+        }
+
+        private void AST_Click(object sender, EventArgs e)
+        {
+            if (parser == null)
+            {
+                MessageBox.Show("Сначала выполните анализ!");
+                return;
+            }
+
+            FormAST form = new FormAST();
+            form.BuildTree(parser.Structs);
+            form.Show();
         }
     }
 }

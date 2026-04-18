@@ -25,6 +25,7 @@ namespace Komp_lab1
     {
         public string Name;
         public string Type;
+        public string Value;
     }
 
     internal class Parser
@@ -35,6 +36,7 @@ namespace Komp_lab1
 
         public List<StructDeclNode> Structs = new List<StructDeclNode>();
         StructDeclNode currentStruct;
+        FieldDeclNode currentField;
         private RichTextBox output;
         
         string currentType;
@@ -224,17 +226,14 @@ namespace Komp_lab1
                             CheckFieldDuplicate(varName);
                             currentVarName = varName;
 
+                            currentField = new FieldDeclNode();
+                            currentField.Name = varName;
+                            currentField.Type = currentType;
                             if (!hasErrorInStruct)
                             {
-                                FieldDeclNode field = new FieldDeclNode();
-                                field.Name = varName;
-                                field.Type = currentType;
-
-                                currentStruct.Fields.Add(field);
+                                currentStruct.Fields.Add(currentField);
                             }
-
-
-
+                            
                             Next();
                             if (Match(TokenType.Operator, "="))
                             {
@@ -257,11 +256,19 @@ namespace Komp_lab1
                         if (currentType == "array")
                         {
                             CheckArray();
+                            if (!hasErrorInStruct && currentField != null)
+                            {
+                                currentField.Value = "[]";
+                            }
                         }
                         else
                         {
                             string value = Current.Value;
                             CheckType(currentType, value);
+                            if (!hasErrorInStruct  && currentField != null)
+                            {
+                                currentField.Value = value;
+                            }
                         }
                         state = State.S6;
                         Next();
@@ -416,7 +423,7 @@ namespace Komp_lab1
             }
             foreach (var s in Structs)
             {
-                PrintNode(s, "");
+                PrintNode(s, " ");
                 output.AppendText("\n");
             }
         }
@@ -439,12 +446,30 @@ namespace Komp_lab1
                 if (isLast)
                 {
                     output.AppendText($"{indent}        ├── name: \"{field.Name}\"\n");
-                    output.AppendText($"{indent}        └── type: {field.Type}\n");
+
+                    if (field.Value != null)
+                    {
+                        output.AppendText($"{indent}        ├── type: {field.Type}\n");
+                        output.AppendText($"{indent}        └── value: {field.Value}\n");
+                    }
+                    else
+                    {
+                        output.AppendText($"{indent}        └── type: {field.Type}\n");
+                    }
                 }
                 else
                 {
                     output.AppendText($"{indent}    │   ├── name: \"{field.Name}\"\n");
-                    output.AppendText($"{indent}    │   └── type: {field.Type}\n");
+
+                    if (field.Value != null)
+                    {
+                        output.AppendText($"{indent}    │   ├── type: {field.Type}\n");
+                        output.AppendText($"{indent}    │   └── value: {field.Value}\n");
+                    }
+                    else
+                    {
+                        output.AppendText($"{indent}    │   └── type: {field.Type}\n");
+                    }
                 }
             }
         }
