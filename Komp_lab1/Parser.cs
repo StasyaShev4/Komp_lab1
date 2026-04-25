@@ -183,11 +183,9 @@ namespace Komp_lab1
 
             while (position < tokens.Count)
             {
-                // --- 1. если ждём конкретный токен ---
                 if (expectedValue != null && Current.Value == expectedValue)
                     break;
 
-                // --- 2. точки синхронизации ---
                 if (Current.Type == TokenType.Separator && Current.Value == ";")
                     break;
 
@@ -197,13 +195,11 @@ namespace Komp_lab1
                 if (insideBracket && Current.Type == TokenType.Separator && Current.Value == ")")
                     break;
 
-                // --- 3. если ждём операнд ---
-                if (expectedType == "operand" &&
+                if (expectedType == "операнд" &&
                     (Current.Type == TokenType.IntegerLiteral || Current.Type == TokenType.Identifier))
                     break;
 
-                // --- 4. если ждём оператор ---
-                if (expectedType == "operator" &&
+                if (expectedType == "оператор" &&
                     Current.Type == TokenType.Operator)
                     break;
 
@@ -213,25 +209,18 @@ namespace Komp_lab1
 
             Error($"Ошибка: ожидался {expectedValue ?? expectedType}, получено \"{errorFragment}\"");
 
-            // --- возвращаем позицию ---
             if (expectedValue != null && Current.Value == expectedValue)
                 return position + 1;
 
-            if (expectedType == "operand" &&
+            if (expectedType == "операнд" &&
                 (Current.Type == TokenType.IntegerLiteral || Current.Type == TokenType.Identifier))
                 return position + 1;
 
-            if (expectedType == "operator" &&
+            if (expectedType == "оператор" &&
                 Current.Type == TokenType.Operator)
                 return position + 1;
 
             return position;
-        }
-
-        private bool Match(TokenType type, string value = null)
-        {
-            if (Current.Type == TokenType.EndOfFile) return false;
-            return Current.Type == type && (value == null || Current.Value == value);
         }
         private bool IsOperator(string op)
         {
