@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection.Emit;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
@@ -504,6 +505,25 @@ namespace Komp_lab1
                 }
                 InitGridTet();
                 ShowQuads(parser.GetQuads());
+
+                RPN polizBuilder = new RPN ();
+
+                if (parser.Errors.Count == 0)
+                {
+
+                    bool onlyNumbers = tokens.All(t =>
+                        t.Type != TokenType.Identifier);
+
+                    if (onlyNumbers)
+                    {
+                        var poliz = polizBuilder.Build(tokens);
+                        int result = polizBuilder.Evaluate(poliz);
+                        MessageBox.Show(
+                            "ПОЛИЗ: " + string.Join(" ", poliz) +
+                            "\nРезультат: " + result);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
