@@ -28,6 +28,16 @@ namespace Komp_lab1
         }
         private Token Current => tokens[Math.Min(position, tokens.Count - 1)];
 
+        private List<Tetrads> tetrad = new List<Tetrads>();
+        private int tempCounter = 1;
+        public List<Tetrads> GetQuads()
+        {
+            return tetrad;
+        }
+        private string NewTemp()
+        {
+            return "t" + tempCounter++;
+        }
         public void RemoveWhitespaceTokens()
         {
             var newTokens = new List<Token>();
@@ -44,119 +54,93 @@ namespace Komp_lab1
         public void Parse()
         {
             RemoveWhitespaceTokens();
+
             ParsGrammarOfArithmeticExpressions();
+
             if (Current.Type == TokenType.Separator && Current.Value == ";")
             {
                 Eat(TokenType.Separator, ";");
             }
             else
             {
-                Error("Ожидалась ';' в конце выражения");
-                position = Recover(expectedValue: ";");
-
-                if (Current.Value == ";")
-                    Eat(TokenType.Separator, ";");
+                Error("Ожидалась ';'");
             }
-
-            if (Current.Type != TokenType.EndOfFile)
-            {
-                Error("Лишние символы после ';'");
-            }
-
         }
-        public void ParsGrammarOfArithmeticExpressions()
+        public string ParsGrammarOfArithmeticExpressions()
         {
-            ParseT();
-            ParseA();
+            string left = ParseT();
+            return ParseA(left);
         }
-        private void ParseT()
+        private string ParseT()
         {
-            ParseF();
-            ParseB();
+            string left = ParseF();
+            return ParseB(left);
         }
 
-        private void ParseA()
+        private string ParseA(string left)
         {
             while (IsOperator("+") || IsOperator("-"))
             {
                 string op = Current.Value;
                 Eat(TokenType.Operator, op);
 
-                if (Current.Type == TokenType.IntegerLiteral ||
-                    Current.Type == TokenType.Identifier ||
-                    (Current.Type == TokenType.Separator && Current.Value == "("))
-                {
-                    ParseT();
-                }
-                else
-                {
-                    position = Recover(expectedType: "operand");
-                }
+                string right = ParseT();
+
+                string temp = NewTemp();
+                tetrad.Add(new Tetrads(op, left, right, temp));
+
+                left = temp;
             }
+
+            return left;
         }
 
-        private void ParseF()
+        private string ParseF()
         {
             if (Current.Type == TokenType.IntegerLiteral)
             {
+                string value = Current.Value;
                 Eat(TokenType.IntegerLiteral);
+                return value;
             }
             else if (Current.Type == TokenType.Identifier)
             {
+                string value = Current.Value;
                 Eat(TokenType.Identifier);
+                return value;
             }
             else if (Current.Type == TokenType.Separator && Current.Value == "(")
             {
                 Eat(TokenType.Separator, "(");
 
-                ParsGrammarOfArithmeticExpressions();
+                string result = ParsGrammarOfArithmeticExpressions();
 
-                if (Current.Type == TokenType.Separator && Current.Value == ")")
-                {
-                    Eat(TokenType.Separator, ")");
-                }
-                else
-                {
-                    position = Recover(expectedValue: ")", insideBracket: true);
-                }
+                Eat(TokenType.Separator, ")");
+                return result;
             }
             else
             {
-                position = Recover(expectedType: "operand");
-
-                if (Current.Type == TokenType.IntegerLiteral ||
-                    Current.Type == TokenType.Identifier ||
-                    (Current.Type == TokenType.Separator && Current.Value == "("))
-                {
-                    ParseF();
-                }
+                position = Recover(expectedType: "операнд");
+                return "error";
             }
         }
-        private void ParseB()
+        private string ParseB(string left)
         {
             while (IsOperator("*") || IsOperator("/") || IsOperator("%") ||
                    IsOperator("**") || IsOperator("//"))
             {
-                Eat(TokenType.Operator, Current.Value);
+                string op = Current.Value;
+                Eat(TokenType.Operator, op);
 
-                if (Current.Type == TokenType.IntegerLiteral ||
-                    Current.Type == TokenType.Identifier ||
-                    (Current.Type == TokenType.Separator && Current.Value == "("))
-                {
-                    ParseF();
-                }
-                else
-                {
-                    position = Recover(expectedType: "operand");
+                string right = ParseF();
 
-                    if (Current.Type == TokenType.IntegerLiteral ||
-                        Current.Type == TokenType.Identifier ||
-                        (Current.Type == TokenType.Separator && Current.Value == "("))
-                    {
-                        ParseF();
-                    }
-                }
+                string temp = NewTemp();
+                tetrad.Add(new Tetrads(op, left, right, temp));
+
+                left = temp;
             }
+
+            return left;
         }
 
         private void Eat(TokenType type, string value = null)

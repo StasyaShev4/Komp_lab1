@@ -85,6 +85,20 @@ namespace Komp_lab1
             dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
             dataGridView1.RowHeadersWidth = 60;
         }
+        private void InitGridTet()
+        {
+            dataGridView1.Columns.Clear();
+
+            dataGridView1.Columns.Add("Op", "Оператор");
+            dataGridView1.Columns.Add("Arg1", "Операнд 1");
+            dataGridView1.Columns.Add("Arg2", "Операнд 2");
+            dataGridView1.Columns.Add("Result", "Результат");
+            dataGridView1.Columns["Op"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns["Arg1"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns["Arg2"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns["Result"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Rows.Clear();
+        }
         private void LineNumbers()
         {
             try
@@ -398,6 +412,7 @@ namespace Komp_lab1
                     return type.ToString();
             }
         }
+        
         private string GetLocation(int position, string value, int line)
         {
             int length = value.Length;
@@ -408,6 +423,15 @@ namespace Komp_lab1
                 return $"строка {line}, позиция {position + 1}";
             else
                 return $"строка {line}, {position + 1}-{position + length}";
+        }
+        private void ShowQuads(List<Tetrads> quads)
+        {
+            dataGridView1.Rows.Clear();
+
+            foreach (var q in quads)
+            {
+                dataGridView1.Rows.Add(q.Op, q.Arg1, q.Arg2, q.Result);
+            }
         }
         private void RunLexicalAnalyzer()
         {
@@ -472,9 +496,14 @@ namespace Komp_lab1
                 //    }
                 //}
                 label3.Text = $"Найдено токенов: {tokens.Count}";
-
-
-
+                                
+                if (parser.Errors.Count > 0)
+                {
+                    MessageBox.Show("Есть ошибки!");
+                    return;
+                }
+                InitGridTet();
+                ShowQuads(parser.GetQuads());
             }
             catch (Exception ex)
             {
