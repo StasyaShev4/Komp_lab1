@@ -9,9 +9,9 @@ namespace Komp_lab1
 {
     public enum TokenType
     {
-        Keyword,
         Identifier,
-        Variable,
+        Operator,
+        IntegerLiteral,
         Separator,
         Whitespace,
         Unknown,

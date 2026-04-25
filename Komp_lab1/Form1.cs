@@ -382,12 +382,12 @@ namespace Komp_lab1
         {
             switch (type)
             {
-                case TokenType.Keyword:
-                    return "Ключевое слово";
                 case TokenType.Identifier:
                     return "Идентификатор";
-                case TokenType.Variable:
-                    return "Переменная";
+                case TokenType.Operator:
+                    return "Оператор";
+                case TokenType.IntegerLiteral:
+                    return "Целове число";
                 case TokenType.Separator:
                     return "Разделитель";
                 case TokenType.Whitespace:
@@ -447,6 +447,33 @@ namespace Komp_lab1
                     dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightPink;
                 }
                 label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
+
+                //foreach (Token token in tokens)
+                //{
+                //    if (token.Type == TokenType.Whitespace || token.Type == TokenType.EndOfFile)
+                //        continue;
+
+                //    string tokenTypeDesc = GetTokenTypeString(token.Type);
+                //    string location = GetLocation(token.Position, token.Value, token.Line);
+
+                //    int rowIndex = dataGridView1.Rows.Add(
+                //        token.Value,
+                //        location,
+                //        tokenTypeDesc
+                //    );
+                //    dataGridView1.Rows[rowIndex].Tag = token;
+
+                //    if (token.Type == TokenType.Unknown)
+                //    {
+                //        richTextBox1.SelectionStart = token.Position;
+                //        richTextBox1.SelectionLength = token.Value.Length;
+                //        richTextBox1.SelectionColor = Color.Red;
+                //        dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
+                //    }
+                //}
+                label3.Text = $"Найдено токенов: {tokens.Count}";
+
+
 
             }
             catch (Exception ex)
@@ -523,12 +550,12 @@ namespace Komp_lab1
 
         private void тестToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            richTextBox1.Text = "struct Employee {\r\n    string $firstName;\r\n    string $lastName;\r\n    int $salary;\r\n    bool $fullTime;\r\n};";
+            richTextBox1.Text = ";";
         }
 
         private void открытьПримерСОшибкамиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            richTextBox1.Text = "struc UserProfile \r\n    string $username;\r\n    int age;\r\n    ft $rating;\r\n    bool $;\r\n     $roles;\r\n};";
+            richTextBox1.Text = ";";
         }
     }
 }

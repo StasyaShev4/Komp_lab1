@@ -13,22 +13,23 @@ namespace Komp_lab1
         private int position = 0;
         private int line = 1;
 
-        private readonly HashSet<string> keywords = new HashSet<string> {
-            "string", "int", "bool", "array", "float", "struct"
+        private readonly HashSet<char> operators = new HashSet<char>
+        {
+            '=', '-', '+', '*',  '/', '%'
         };
         private readonly HashSet<string> separators = new HashSet<string> {
-            "{", "}", ";"
+            "(", ")", ";"
         };
-        public LexicalAnalyzer(string text) 
+        public LexicalAnalyzer(string text)
         {
             input = text;
         }
 
-        public List<Token> Analize() 
+        public List<Token> Analize()
         {
             List<Token> tokens = new List<Token>();
 
-            while (position < input.Length) 
+            while (position < input.Length)
             {
                 char c = input[position];
                 if (c == '\r' || c == '\n')
@@ -55,12 +56,17 @@ namespace Komp_lab1
                     position++;
                     continue;
                 }
-                if (IsLatinLetter(c) || c == '_')
+                if (char.IsDigit(c))
                 {
-                    tokens.Add(ReadIndentifier());
+                    tokens.Add(ReadNumber());
                     continue;
                 }
-                if (c == '$') 
+                if (operators.Contains(c))
+                {
+                    tokens.Add(ReadOperator());
+                    continue;
+                }
+                if (c == '$')
                 {
                     tokens.Add(ReadVariable());
                     continue;
@@ -72,12 +78,12 @@ namespace Komp_lab1
                     continue;
                 }
                 tokens.Add(Unknown());
-                
+
             }
             tokens.Add(new Token(TokenType.EndOfFile, "EndOfFile", position, line));
             return tokens;
         }
-        Token Unknown() 
+        Token Unknown()
         {
             int start = position, startLP = line;
             
@@ -86,7 +92,7 @@ namespace Komp_lab1
                 input[position] != '\n' &&
                 input[position] != '\r' &&
                 !separators.Contains(input[position].ToString()))
-            { 
+            {
                 position++;
             }
             string value = input.Substring(start, position - start);
@@ -94,36 +100,60 @@ namespace Komp_lab1
         }
         Token ReadVariable()
         {
-            int start = position, startLP = line;
+            int start = position;
+            int startLine = line;
 
-            position ++;
+            position++;
 
-            while (position < input.Length && char.IsLetterOrDigit(input[position]))
+            while (position < input.Length &&
+                   (char.IsLetterOrDigit(input[position]) || input[position] == '_'))
             {
                 position++;
             }
-            string var = input.Substring(start, position - start);
 
-            return new Token(TokenType.Variable, var, start, startLP);
+            string value = input.Substring(start, position - start);
+
+            return new Token(TokenType.Identifier, value, start, startLine);
         }
-
-        Token ReadIndentifier() 
+        Token ReadNumber()
         {
-            int start = position, startLP = line;
-            while (position < input.Length && char.IsLetterOrDigit(input[position])) 
+            int start = position;
+            int startLine = line;
+
+            while (position < input.Length && char.IsDigit(input[position]))
             {
                 position++;
             }
-            string word = input.Substring(start, position - start);
 
-            if (keywords.Contains(word))
-                return new Token(TokenType.Keyword, word, start, startLP);
+            string number = input.Substring(start, position - start);
 
-            return new Token(TokenType.Identifier, word, start, startLP);
+            return new Token(TokenType.IntegerLiteral, number, start, startLine);
         }
-        private bool IsLatinLetter(char c)
+        Token ReadOperator()
         {
-            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+            int start = position;
+            int startLine = line;
+
+            char current = input[position];
+
+            if (position + 1 < input.Length)
+            {
+                char next = input[position + 1];
+
+                if (current == '*' && next == '*')
+                {
+                    position += 2;
+                    return new Token(TokenType.Operator, "**", start, startLine);
+                }
+
+                if (current == '/' && next == '/')
+                {
+                    position += 2;
+                    return new Token(TokenType.Operator, "//", start, startLine);
+                }
+            }
+            position++;
+            return new Token(TokenType.Operator, current.ToString(), start, startLine);
         }
     }
 }

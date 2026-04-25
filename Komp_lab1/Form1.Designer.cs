@@ -51,6 +51,7 @@
             this.SaveAsTSM = new System.Windows.Forms.ToolStripMenuItem();
             this.Output = new System.Windows.Forms.ToolStripMenuItem();
             this.ОткрытьплохойпримерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.открытьПримерСОшибкамиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сохранитьФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelTSM = new System.Windows.Forms.ToolStripMenuItem();
             this.repeatTSM = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,7 +82,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.открытьПримерСОшибкамиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -316,6 +316,13 @@
             this.ОткрытьплохойпримерToolStripMenuItem.Text = "Открыть верный пример";
             this.ОткрытьплохойпримерToolStripMenuItem.Click += new System.EventHandler(this.тестToolStripMenuItem_Click);
             // 
+            // открытьПримерСОшибкамиToolStripMenuItem
+            // 
+            this.открытьПримерСОшибкамиToolStripMenuItem.Name = "открытьПримерСОшибкамиToolStripMenuItem";
+            this.открытьПримерСОшибкамиToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.открытьПримерСОшибкамиToolStripMenuItem.Text = "Открыть пример с ошибками";
+            this.открытьПримерСОшибкамиToolStripMenuItem.Click += new System.EventHandler(this.открытьПримерСОшибкамиToolStripMenuItem_Click);
+            // 
             // сохранитьФайлToolStripMenuItem
             // 
             this.сохранитьФайлToolStripMenuItem.BackColor = System.Drawing.Color.Transparent;
@@ -482,7 +489,7 @@
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox1.Location = new System.Drawing.Point(98, 0);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(784, 182);
+            this.richTextBox1.Size = new System.Drawing.Size(784, 53);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -494,7 +501,7 @@
             this.richTextBox2.Location = new System.Drawing.Point(0, 0);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox2.Size = new System.Drawing.Size(98, 182);
+            this.richTextBox2.Size = new System.Drawing.Size(98, 53);
             this.richTextBox2.TabIndex = 13;
             this.richTextBox2.Text = "";
             // 
@@ -519,7 +526,7 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(882, 239);
+            this.dataGridView1.Size = new System.Drawing.Size(882, 368);
             this.dataGridView1.TabIndex = 0;
             // 
             // openFileDialog1
@@ -545,7 +552,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Panel2.Controls.Add(this.panel2);
             this.splitContainer1.Size = new System.Drawing.Size(882, 457);
-            this.splitContainer1.SplitterDistance = 182;
+            this.splitContainer1.SplitterDistance = 53;
             this.splitContainer1.TabIndex = 14;
             // 
             // panel2
@@ -575,13 +582,6 @@
             this.label2.Size = new System.Drawing.Size(44, 16);
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
-            // 
-            // открытьПримерСОшибкамиToolStripMenuItem
-            // 
-            this.открытьПримерСОшибкамиToolStripMenuItem.Name = "открытьПримерСОшибкамиToolStripMenuItem";
-            this.открытьПримерСОшибкамиToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
-            this.открытьПримерСОшибкамиToolStripMenuItem.Text = "Открыть пример с ошибками";
-            this.открытьПримерСОшибкамиToolStripMenuItem.Click += new System.EventHandler(this.открытьПримерСОшибкамиToolStripMenuItem_Click);
             // 
             // Form1
             // 

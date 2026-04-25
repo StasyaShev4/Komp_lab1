@@ -8,7 +8,8 @@ using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
 
 namespace Komp_lab1
-{    class SyntaxError
+{
+    class SyntaxError
     {
         public string Fragment;
         public string Message;
@@ -18,8 +19,8 @@ namespace Komp_lab1
     internal class Parser
     {
         private List<Token> tokens;
-        private int position =0;
-        public List<SyntaxError> Errors = new List<SyntaxError> ();
+        private int position = 0;
+        public List<SyntaxError> Errors = new List<SyntaxError>();
 
         public Parser(List<Token> tokens)
         {
@@ -40,273 +41,201 @@ namespace Komp_lab1
             tokens = newTokens;
             position = 0;
         }
-        public void Parse() 
+        public void Parse()
         {
             RemoveWhitespaceTokens();
-
-            while (Current.Type != TokenType.EndOfFile)
+            ParsGrammarOfArithmeticExpressions();
+            if (Current.Type == TokenType.Separator && Current.Value == ";")
             {
-                ParseOneStructFSM();
+                Eat(TokenType.Separator, ";");
             }
-        }
-        enum State { S0, S1, S2, S3, S4, S5, S6, S7, S8, ERROR }
-        public void ParseOneStructFSM()
-        {
-            State state = State.S0;
-
-            while (state != State.S8)
+            else
             {
+                Error("Ожидалась ';' в конце выражения");
+                position = Recover(expectedValue: ";");
 
-                var flag = Current.Type;
-                switch (state)
+                if (Current.Value == ";")
+                    Eat(TokenType.Separator, ";");
+            }
+
+            if (Current.Type != TokenType.EndOfFile)
+            {
+                Error("Лишние символы после ';'");
+            }
+
+        }
+        public void ParsGrammarOfArithmeticExpressions()
+        {
+            ParseT();
+            ParseA();
+        }
+        private void ParseT()
+        {
+            ParseF();
+            ParseB();
+        }
+
+        private void ParseA()
+        {
+            while (IsOperator("+") || IsOperator("-"))
+            {
+                string op = Current.Value;
+                Eat(TokenType.Operator, op);
+
+                if (Current.Type == TokenType.IntegerLiteral ||
+                    Current.Type == TokenType.Identifier ||
+                    (Current.Type == TokenType.Separator && Current.Value == "("))
                 {
-                    case State.S0:
-                        if (Match(TokenType.Keyword, "struct"))
-                        {
-                            Next();
-                            state = State.S1;
-                        }
-                        else
-                        {
-                            Error("Ожидалось 'struct'");
-
-                            if (position + 1 < tokens.Count && tokens[position + 1].Type == TokenType.Identifier)
-                            {
-                                if (position + 2 < tokens.Count &&
-                                    tokens[position + 2].Type == TokenType.Separator &&
-                                    tokens[position + 2].Value == "{")
-                                {
-                                    Next();
-                                    state = State.S1;
-                                }
-                                else
-                                {
-                                    position += 2;
-                                    Error("Ожидалась '{' после имени структуры");
-                                    state = State.ERROR;
-                                }
-                            }
-                            else
-                            {
-                                state = State.ERROR;
-                            }
-                        }
-                        break;
-
-                    case State.S1:
-                        if (Match(TokenType.Identifier))
-                        {
-                            Next();
-                            state = State.S2;
-                        }
-                        else
-                        {
-                            Error("Ожидалось имя структуры");
-                            state = State.ERROR;
-                        }
-                        break;
-
-                    case State.S2:
-                        if (Match(TokenType.Separator, "{"))
-                        {
-                            Next();
-                            state = State.S3;
-                        }
-                        else
-                        {
-                            Error("Ожидалась '{'");
-                            state = State.ERROR;
-                        }
-                        break;
-
-                    case State.S3:
-                        if (Match(TokenType.Keyword) && IsType(Current.Value))
-                        {
-                            Next();
-                            state = State.S4;
-                        }
-                        else if (Match(TokenType.Separator, "}"))
-                        {
-                            Next();
-                            state = State.S7;
-                        }
-                        else if (Current.Type == TokenType.Variable)
-                        {
-                            if (Current.Value.Length > 1)
-                            {
-                                Error("Пропущен тип перед переменной");
-                                Next();
-                                state = State.S6;
-                            }
-                            else
-                            {
-                                Error("Некорректное имя переменной");
-                                Next();
-                                state = State.ERROR;
-                            }
-                        }
-                        else if (Current.Type == TokenType.EndOfFile)
-                        {
-                            state = State.S8;
-                        }
-                        else
-                        {
-                            Error("Ожидался тип переменной или '}'");
-
-                            if (position + 1 < tokens.Count && tokens[position + 1].Type == TokenType.Variable)
-                            {
-                                if (position + 2 < tokens.Count &&
-                                    tokens[position + 2].Type == TokenType.Separator &&
-                                    tokens[position + 2].Value == ";")
-                                {
-                                    Next();
-                                    state = State.S4;
-                                }
-                                else
-                                {
-                                    position += 2;
-                                    Error("Ожидалась ';' после имени переменнной");
-                                    state = State.ERROR;
-                                }
-                            }
-                            else 
-                            {
-                                state = State.ERROR;
-                            }
-
-                        }
-                        break;
-
-                    case State.S4:
-                        if (Current.Type == TokenType.Variable && Current.Value.Length >=2)
-                        {
-                            Next();
-                            state = State.S6;
-                        }
-                        else 
-                        {
-                            Error("Ожидалась переменная $name");
-                            state = State.ERROR;
-                        }
-                        break;
-
-                    case State.S6:
-                        if (Match(TokenType.Separator, ";"))
-                        {
-                            Next();
-                            state = State.S3;
-                        }
-                        else 
-                        {
-                            Error("Ожидался ';' после переменной");
-                            state = State.ERROR;
-                        }
-                        break;
-
-                    case State.S7:
-                        if (Match(TokenType.Separator, ";"))
-                        {
-                            Next();
-                            state = State.S8;
-                        }
-                        else
-                        {
-                            Error("Ожидался завершеющий';'");
-                            state = State.ERROR;
-                        }
-                        break;
-
-                    case State.ERROR:
-                        var result = Recover();
-
-                        if (flag == TokenType.Identifier)
-                        {
-
-                        }
-
-                        switch (result)
-                        {
-                            case RecoverResult.ToStruct:
-                                state = State.S1;
-                                break;
-
-                            case RecoverResult.ToFields:
-                                state = State.S3;
-                                break;
-
-                            case RecoverResult.ToFinal:
-                                state = State.S7;
-                                break;
-                            case RecoverResult.ToEnd:
-                                state = State.S8;
-                                break;
-                        }
-
-                        break;
+                    ParseT();
+                }
+                else
+                {
+                    position = Recover(expectedType: "operand");
                 }
             }
         }
-        private void Next() 
+
+        private void ParseF()
+        {
+            if (Current.Type == TokenType.IntegerLiteral)
+            {
+                Eat(TokenType.IntegerLiteral);
+            }
+            else if (Current.Type == TokenType.Identifier)
+            {
+                Eat(TokenType.Identifier);
+            }
+            else if (Current.Type == TokenType.Separator && Current.Value == "(")
+            {
+                Eat(TokenType.Separator, "(");
+
+                ParsGrammarOfArithmeticExpressions();
+
+                if (Current.Type == TokenType.Separator && Current.Value == ")")
+                {
+                    Eat(TokenType.Separator, ")");
+                }
+                else
+                {
+                    position = Recover(expectedValue: ")", insideBracket: true);
+                }
+            }
+            else
+            {
+                position = Recover(expectedType: "operand");
+
+                if (Current.Type == TokenType.IntegerLiteral ||
+                    Current.Type == TokenType.Identifier ||
+                    (Current.Type == TokenType.Separator && Current.Value == "("))
+                {
+                    ParseF();
+                }
+            }
+        }
+        private void ParseB()
+        {
+            while (IsOperator("*") || IsOperator("/") || IsOperator("%") ||
+                   IsOperator("**") || IsOperator("//"))
+            {
+                Eat(TokenType.Operator, Current.Value);
+
+                if (Current.Type == TokenType.IntegerLiteral ||
+                    Current.Type == TokenType.Identifier ||
+                    (Current.Type == TokenType.Separator && Current.Value == "("))
+                {
+                    ParseF();
+                }
+                else
+                {
+                    position = Recover(expectedType: "operand");
+
+                    if (Current.Type == TokenType.IntegerLiteral ||
+                        Current.Type == TokenType.Identifier ||
+                        (Current.Type == TokenType.Separator && Current.Value == "("))
+                    {
+                        ParseF();
+                    }
+                }
+            }
+        }
+
+        private void Eat(TokenType type, string value = null)
+        {
+            if (Current.Type == type && (value == null || Current.Value == value))
+            {
+                Next();
+            }
+            else
+            {
+                Error($"Ожидался {value ?? type.ToString()}, получен {Current.Value}");
+                Next();
+            }
+        }
+
+
+        private void Next()
         {
             position++;
         }
-        private bool IsType(string value)
+        private int Recover(string expectedType = null, string expectedValue = null, bool insideBracket = false)
         {
-            return value == "string" ||
-                   value == "int" ||
-                   value == "float" ||
-                   value == "bool" ||
-                   value == "array";
-        }
-        enum RecoverResult
-        {
-            ToStruct,
-            ToFields,
-            ToFinal,
-            ToEnd
-        }
-        private RecoverResult Recover()
-        {
-            while (Current.Type != TokenType.EndOfFile)
+            string errorFragment = Current.Value;
+
+            while (position < tokens.Count)
             {
-                if (Current.Type == TokenType.Separator && Current.Value == "{")
-                {
-                    Next(); 
-                    return RecoverResult.ToFields;
-                }
+                // --- 1. если ждём конкретный токен ---
+                if (expectedValue != null && Current.Value == expectedValue)
+                    break;
 
-                if (Current.Type == TokenType.Separator && Current.Value == "}")
-                {
-                    Next();
-                    return RecoverResult.ToFinal;
-                }
-
+                // --- 2. точки синхронизации ---
                 if (Current.Type == TokenType.Separator && Current.Value == ";")
-                {
-                    Next();
-                    return RecoverResult.ToFields;
-                }
+                    break;
 
-                if (Current.Type == TokenType.Keyword && Current.Value == "struct")
-                {
-                    return RecoverResult.ToStruct;
-                }
+                if (Current.Type == TokenType.Separator && Current.Value == "(")
+                    break;
 
-                if (Current.Type == TokenType.Keyword && IsType(Current.Value))
-                {
-                    return RecoverResult.ToFields;
-                }
+                if (insideBracket && Current.Type == TokenType.Separator && Current.Value == ")")
+                    break;
 
+                // --- 3. если ждём операнд ---
+                if (expectedType == "operand" &&
+                    (Current.Type == TokenType.IntegerLiteral || Current.Type == TokenType.Identifier))
+                    break;
+
+                // --- 4. если ждём оператор ---
+                if (expectedType == "operator" &&
+                    Current.Type == TokenType.Operator)
+                    break;
+
+                errorFragment += Current.Value;
                 Next();
             }
 
-            return RecoverResult.ToEnd;
+            Error($"Ошибка: ожидался {expectedValue ?? expectedType}, получено \"{errorFragment}\"");
+
+            // --- возвращаем позицию ---
+            if (expectedValue != null && Current.Value == expectedValue)
+                return position + 1;
+
+            if (expectedType == "operand" &&
+                (Current.Type == TokenType.IntegerLiteral || Current.Type == TokenType.Identifier))
+                return position + 1;
+
+            if (expectedType == "operator" &&
+                Current.Type == TokenType.Operator)
+                return position + 1;
+
+            return position;
         }
 
         private bool Match(TokenType type, string value = null)
         {
             if (Current.Type == TokenType.EndOfFile) return false;
             return Current.Type == type && (value == null || Current.Value == value);
+        }
+        private bool IsOperator(string op)
+        {
+            return Current.Type == TokenType.Operator && Current.Value == op;
         }
         private void Error(string message)
         {
