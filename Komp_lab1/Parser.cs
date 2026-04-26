@@ -30,6 +30,8 @@ namespace Komp_lab1
 
         private List<Tetrads> tetrad = new List<Tetrads>();
         private int tempCounter = 1;
+
+        private HashSet<string> errorSet = new HashSet<string>();
         public List<Tetrads> GetQuads()
         {
             return tetrad;
@@ -55,7 +57,13 @@ namespace Komp_lab1
         {
             RemoveWhitespaceTokens();
 
-            ParsGrammarOfArithmeticExpressions();
+            ParsGrammarOfArithmeticExpressions(false);
+
+            while (Current.Type == TokenType.Separator && Current.Value == ")")
+            {
+                Error("Лишняя закрывающая скобка ')'");
+                Next();
+            }
 
             if (Current.Type == TokenType.Separator && Current.Value == ";")
             {
@@ -64,38 +72,54 @@ namespace Komp_lab1
             else
             {
                 Error("Ожидалась ';'");
+                return;
+            }
+            while (Current.Type == TokenType.Separator && Current.Value == ";")
+            {
+                Error("Лишняя ';'");
+                Next();
+            }
+
+            if (Current.Type != TokenType.EndOfFile)
+            {
+                Error($"Лишний символ после ';' → \"{Current.Value}\"");
+
+                while (Current.Type != TokenType.EndOfFile)
+                    Next();
             }
         }
-        public string ParsGrammarOfArithmeticExpressions()
+        public string ParsGrammarOfArithmeticExpressions(bool insideBracket = false)
         {
-            string left = ParseT();
-            return ParseA(left);
+            string left = ParseT(insideBracket);
+            return ParseA(left, insideBracket);
         }
-        private string ParseT()
+        private string ParseT(bool insideBracket)
         {
-            string left = ParseF();
-            return ParseB(left);
+            string left = ParseF(insideBracket);
+            return ParseB(left, insideBracket);
         }
 
-        private string ParseA(string left)
+        private string ParseA(string left, bool insideBracket)
         {
             while (IsOperator("+") || IsOperator("-"))
             {
                 string op = Current.Value;
                 Eat(TokenType.Operator, op);
 
-                string right = ParseT();
+                string right = ParseT(insideBracket);
 
                 string temp = NewTemp();
                 tetrad.Add(new Tetrads(op, left, right, temp));
 
                 left = temp;
             }
+            if (insideBracket && Current.Value == ")")
+                return left;
 
             return left;
         }
 
-        private string ParseF()
+        private string ParseF(bool insideBracket)
         {
             if (Current.Type == TokenType.IntegerLiteral)
             {
@@ -103,28 +127,66 @@ namespace Komp_lab1
                 Eat(TokenType.IntegerLiteral);
                 return value;
             }
-            else if (Current.Type == TokenType.Identifier)
+
+            if (Current.Type == TokenType.Identifier)
             {
                 string value = Current.Value;
                 Eat(TokenType.Identifier);
                 return value;
             }
-            else if (Current.Type == TokenType.Separator && Current.Value == "(")
+
+            if (Current.Type == TokenType.Separator && Current.Value == "(")
             {
                 Eat(TokenType.Separator, "(");
 
-                string result = ParsGrammarOfArithmeticExpressions();
+                string result = ParsGrammarOfArithmeticExpressions(true);
 
-                Eat(TokenType.Separator, ")");
+                if (Current.Type == TokenType.Separator && Current.Value == ")")
+                {
+                    Eat(TokenType.Separator, ")");
+                }
+                else
+                {
+                    Error($"Пропущена ')'");
+
+                    position = Recover(expectedValue: ")", insideBracket: true);
+
+                    if (Current.Value == ")")
+                        Eat(TokenType.Separator, ")");
+                }
+
                 return result;
             }
-            else
+            if (Current.Type == TokenType.Separator && Current.Value == ")")
             {
-                position = Recover(expectedType: "операнд");
+                Error("Ожидался операнд");
+
                 return "error";
             }
+
+            if (Current.Type == TokenType.Operator)
+            {
+                Error("Ожидался операнд");
+
+                position = Recover(expectedType: "операнд");
+
+                return ParseF(insideBracket);
+            }
+
+            Error($"Ожидался операнд, получено \"{Current.Value}\"");
+
+            position = Recover(expectedType: "операнд");
+
+            if (Current.Type == TokenType.IntegerLiteral ||
+                Current.Type == TokenType.Identifier ||
+                (Current.Type == TokenType.Separator && Current.Value == "("))
+            {
+                return ParseF(insideBracket);
+            }
+
+            return "error";
         }
-        private string ParseB(string left)
+        private string ParseB(string left, bool insideBracket)
         {
             while (IsOperator("*") || IsOperator("/") || IsOperator("%") ||
                    IsOperator("**") || IsOperator("//"))
@@ -132,7 +194,7 @@ namespace Komp_lab1
                 string op = Current.Value;
                 Eat(TokenType.Operator, op);
 
-                string right = ParseF();
+                string right = ParseF(insideBracket);
 
                 string temp = NewTemp();
                 tetrad.Add(new Tetrads(op, left, right, temp));
@@ -140,9 +202,11 @@ namespace Komp_lab1
                 left = temp;
             }
 
+            if (insideBracket && Current.Value == ")")
+                return left;
+
             return left;
         }
-
         private void Eat(TokenType type, string value = null)
         {
             if (Current.Type == type && (value == null || Current.Value == value))
@@ -151,19 +215,34 @@ namespace Komp_lab1
             }
             else
             {
-                Error($"Ожидался {value ?? type.ToString()}, получен {Current.Value}");
                 Next();
             }
         }
-
-
+        private bool IsOp(string value)
+        {
+            return value == "+" ||
+                   value == "-" ||
+                   value == "*" ||
+                   value == "**" ||
+                   value == "%" ||
+                   value == "/" ||
+                   value == "//";
+        }
         private void Next()
         {
             position++;
         }
-        private int Recover(string expectedType = null, string expectedValue = null, bool insideBracket = false)
+        private int Recover(string expectedType = null,
+                    string expectedValue = null,
+                    bool insideBracket = false,
+                    bool skipError = false, bool reportError = false)
         {
-            string errorFragment = Current.Value;
+            //string errorFragment = Current.Value;
+            //Error($"Ошибка: ожидался {expectedValue ?? expectedType}, получено \"{errorFragment}\"");
+            if (reportError && expectedValue != null)
+            {
+                Error($"Ожидался {expectedValue}");
+            }
 
             while (position < tokens.Count)
             {
@@ -184,40 +263,33 @@ namespace Komp_lab1
                     break;
 
                 if (expectedType == "оператор" &&
-                    Current.Type == TokenType.Operator)
+                    Current.Type == TokenType.Operator && IsOp(Current.Value))
                     break;
 
-                errorFragment += Current.Value;
                 Next();
             }
 
-            Error($"Ошибка: ожидался {expectedValue ?? expectedType}, получено \"{errorFragment}\"");
-
-            if (expectedValue != null && Current.Value == expectedValue)
-                return position + 1;
-
-            if (expectedType == "операнд" &&
-                (Current.Type == TokenType.IntegerLiteral || Current.Type == TokenType.Identifier))
-                return position + 1;
-
-            if (expectedType == "оператор" &&
-                Current.Type == TokenType.Operator)
-                return position + 1;
-
             return position;
-        }
+        }       
         private bool IsOperator(string op)
         {
             return Current.Type == TokenType.Operator && Current.Value == op;
         }
         private void Error(string message)
         {
+            string key = $"{Current.Line}:{Current.Position}:{message}";
+
+            if (errorSet.Contains(key))
+                return;
+
+            errorSet.Add(key);
+
             Errors.Add(new SyntaxError
             {
-                Fragment = Current?.Value ?? "EndOfFile",
+                Fragment = Current.Value,
                 Message = message,
-                Line = Current?.Line ?? 0,
-                Position = Current?.Position ?? 0
+                Line = Current.Line,
+                Position = Current.Position
             });
         }
     }

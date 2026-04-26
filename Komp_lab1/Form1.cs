@@ -497,32 +497,32 @@ namespace Komp_lab1
                 //    }
                 //}
                 label3.Text = $"Найдено токенов: {tokens.Count}";
-                                
-                if (parser.Errors.Count > 0)
-                {
-                    MessageBox.Show("Есть ошибки!");
-                    return;
-                }
-                InitGridTet();
-                ShowQuads(parser.GetQuads());
 
-                RPN polizBuilder = new RPN ();
+                //if (parser.Errors.Count > 0)
+                //{
+                //    MessageBox.Show("Есть ошибки!");
+                //    return;
+                //}
+                //InitGridTet();
+                //ShowQuads(parser.GetQuads());
 
-                if (parser.Errors.Count == 0)
-                {
+                //RPN polizBuilder = new RPN();
 
-                    bool onlyNumbers = tokens.All(t =>
-                        t.Type != TokenType.Identifier);
+                //if (parser.Errors.Count == 0)
+                //{
 
-                    if (onlyNumbers)
-                    {
-                        var poliz = polizBuilder.Build(tokens);
-                        int result = polizBuilder.Evaluate(poliz);
-                        MessageBox.Show(
-                            "ПОЛИЗ: " + string.Join(" ", poliz) +
-                            "\nРезультат: " + result);
-                    }
-                }
+                //    bool onlyNumbers = tokens.All(t =>
+                //        t.Type != TokenType.Identifier);
+
+                //    if (onlyNumbers)
+                //    {
+                //        var poliz = polizBuilder.Build(tokens);
+                //        int result = polizBuilder.Evaluate(poliz);
+                //        MessageBox.Show(
+                //            "ПОЛИЗ: " + string.Join(" ", poliz) +
+                //            "\nРезультат: " + result);
+                //    }
+                //}
 
             }
             catch (Exception ex)
