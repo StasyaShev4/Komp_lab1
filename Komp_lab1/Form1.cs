@@ -15,6 +15,7 @@ namespace Komp_lab1
     {
 
         private Parser parser;
+        private TACGenerator tacGenerator;
         Correction correction;
         string filename;
         [DllImport("user32.dll")]
@@ -25,6 +26,9 @@ namespace Komp_lab1
         {
             InitializeComponent();
             label1.Text = "";
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView2.Dock = DockStyle.Fill;
+            richTextBox4.Dock = DockStyle.Fill;
             richTextBox2.ReadOnly = true;
             richTextBox2.Enabled = false;
             richTextBox2.ScrollBars = RichTextBoxScrollBars.None;
@@ -35,10 +39,21 @@ namespace Komp_lab1
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
             dataGridView1.CellClick += DataGridView1_CellClick;
             dataGridView1.RowPostPaint += DataGridView1_RowPostPaint;
+            dataGridView2.RowPostPaint += DataGridView1_RowPostPaint;
+
+
+            dataGridView1.Visible = false;
+            dataGridView2.Visible = false;
+            richTextBox4.Visible = true;            
+            richTextBox4.Font = new Font("Consolas", 12);
+            tacGenerator = new TACGenerator();
             LineNumbers();
             DGInit();
-            
-            richTextBox1.Text = "struct User {\r\n    int $id = 314;\r\n    float $ab = 3.14;\r\n    string $name = \"Guest\";\r\n    bool $isAdmin = false;\r\n};";
+            InitTACTable();
+
+            richTextBox1.Text = "struct User {\r\n    int $id = 2 + 3 * 4;\r\n    int $score = (10 + 5);\r\n    string $name = \"Guest\";\r\n    bool $active = true;\r\n    int $id1 = 100;\r\n};";
+
+            RunLexicalAnalyzer();
         }
         private void DataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
@@ -90,6 +105,21 @@ namespace Komp_lab1
             dataGridView1.DefaultCellStyle.Font = new Font("Segoe UI", 12);
             dataGridView1.RowHeadersWidth = 60;
         }
+
+        private void InitTACTable()
+        {
+            dataGridView2.Columns.Clear();
+
+            dataGridView2.Columns.Add("Op", "Op");
+            dataGridView2.Columns.Add("Arg1", "Arg1");
+            dataGridView2.Columns.Add("Arg2", "Arg2");
+            dataGridView2.Columns.Add("Result", "Result");
+
+            dataGridView2.AutoSizeColumnsMode =
+                DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView2.DefaultCellStyle.Font = new Font("Segoe UI", 12);
+        }
+
         private void LineNumbers()
         {
             try
@@ -387,6 +417,9 @@ namespace Komp_lab1
             richTextBox1.SelectionColor = Color.Black;
             richTextBox1.DeselectAll();
             dataGridView1.Rows.Clear();
+            dataGridView2.Rows.Clear();
+            richTextBox4.Clear();
+            label3.Text = "AST в текстовом представлении";
             try
             {
                 string inputText = richTextBox1.Text;
@@ -421,8 +454,57 @@ namespace Komp_lab1
                     dataGridView1.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightPink;
                 }
                 label2.Text = $"Найдено ошибок: {parser.Errors.Count}";
+                                
 
-                label3.Text = "AST в текстовом представлении";
+                tacGenerator.Generate(parser.Structs);
+                tacGenerator.OptimizeConstantFolding();
+                tacGenerator.OptimizeTempVariables();
+
+                foreach (var instr in tacGenerator.tac )
+                {
+                    dataGridView2.Rows.Add(
+                        instr.Op,
+                        instr.Arg1,
+                        instr.Arg2,
+                        instr.Result
+                    );
+                }
+
+                richTextBox4.Clear();
+
+                richTextBox4.AppendText(
+                    "THREE ADDRESS CODE (TAC)\n");
+
+                richTextBox4.AppendText(
+                    "Локальные оптимизации промежуточного представления\n\n");
+
+                richTextBox4.AppendText(
+                    tacGenerator.GetTACText(
+                        tacGenerator.tac,
+                        "ИСХОДНЫЙ TAC",
+                        "Исходное промежуточное представление программы "
+                        + "в виде трехадресного кода."));
+
+                richTextBox4.AppendText(
+                    tacGenerator.GetTACText(
+                        tacGenerator.optimizedTac1,
+                        "ОПТИМИЗАЦИЯ 1 - CONSTANT FOLDING",
+                        "Константные арифметические выражения "
+                        + "вычисляются на этапе компиляции."));
+
+                richTextBox4.AppendText(
+                    tacGenerator.GetTACText(
+                        tacGenerator.optimizedTac2,
+                        "ОПТИМИЗАЦИЯ 2 - TEMP VARIABLE ELIMINATION",
+                        "Удаление лишних временных переменных "
+                        + "из промежуточного представления.\n" 
+                        + "Для наглядности оптимизация проводилась на исходном "
+                        + "промежуточном \nпредставлении программы."));
+
+                richTextBox4.AppendText(
+                        "Оптимизация уменьшила количество "
+                        + "промежуточных инструкций "
+                        + "и упростила IR.\n");
 
             }
             catch (Exception ex)
@@ -547,6 +629,24 @@ namespace Komp_lab1
             {
                 MessageBox.Show("Ошибка Graphviz: " + ex.Message);
             }
+        }
+        private void label4_Click(object sender, EventArgs e)
+        {
+            dataGridView2.Visible = false;
+            richTextBox4.Visible = false;
+            dataGridView1.Visible = true;
+        }
+        private void label5_Click(object sender, EventArgs e)
+        {
+            dataGridView2.Visible = false;
+            dataGridView1.Visible = false;
+            richTextBox4.Visible = true;
+        }
+        private void label6_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Visible = false;
+            richTextBox4.Visible = false;
+            dataGridView2.Visible = true;
         }
     }
 }

@@ -26,9 +26,12 @@ namespace Komp_lab1
     {
         public string Name;
         public string Type;
-        public string Value;
-    }
 
+        public string Value;
+        public string ExprResult;
+
+        public List<TACInstruction> ExprTAC = new List<TACInstruction>();
+    }    
     internal class Parser
     {
         private List<Token> tokens;
@@ -36,6 +39,8 @@ namespace Komp_lab1
         public List<SyntaxError> Errors = new List<SyntaxError>();
 
         public List<StructDeclNode> Structs = new List<StructDeclNode>();
+
+
         StructDeclNode currentStruct;
         FieldDeclNode currentField;
         private RichTextBox output;
@@ -55,6 +60,7 @@ namespace Komp_lab1
         bool hasErrorInStruct = false;
         bool hasErrorInField = false;
 
+        private int tempCounter = 1;
         public void RemoveWhitespaceTokens()
         {
             var newTokens = new List<Token>();
@@ -254,25 +260,56 @@ namespace Komp_lab1
                         break;
 
                     case State.S5:
-                        if (currentType == "array")
+
+                        if (currentType == "int")
+                        {
+                            int startPos = position;
+
+                            List<TACInstruction> exprTac =
+                                new List<TACInstruction>();
+
+                            string exprResult =
+                                ParseExpression(exprTac);
+
+                            int endPos = position;
+
+                            StringBuilder exprBuilder =
+                                new StringBuilder();
+
+                            for (int i = startPos; i < endPos; i++)
+                            {
+                                exprBuilder.Append(tokens[i].Value);
+                            }
+
+                            currentField.Value =
+                                exprBuilder.ToString();
+
+                            currentField.ExprResult =
+                                exprResult;
+
+                            currentField.ExprTAC =
+                                exprTac;
+                        }
+                        else if (currentType == "array")
                         {
                             CheckArray();
-                            if (!hasErrorInStruct && currentField != null)
-                            {
-                                currentField.Value = "[]";
-                            }
+
+                            currentField.Value = "[]";
                         }
                         else
                         {
                             string value = Current.Value;
+
                             CheckType(currentType, value);
-                            if (!hasErrorInStruct && currentField != null)
-                            {
-                                currentField.Value = value;
-                            }
+
+                            currentField.Value = value;
+
+                            currentField.ExprResult = value;
+
+                            Next();
                         }
+
                         state = State.S6;
-                        Next();
                         break;
 
                     case State.S6:
@@ -366,6 +403,16 @@ namespace Komp_lab1
             switch (type)
             {
                 case "int":
+                    if (value.Contains("+")
+                        || value.Contains("-")
+                        || value.Contains("*")
+                        || value.Contains("/")
+                        || value.Contains("(")
+                        || value.Contains(")"))
+                    {
+                        return;
+                    }
+
                     if (!long.TryParse(value, out long temp))
                     {
                         Error("Некорректное целое число");
@@ -377,6 +424,15 @@ namespace Komp_lab1
                     break;
 
                 case "float":
+                    if (value.Contains("+")
+                        || value.Contains("-")
+                        || value.Contains("*")
+                        || value.Contains("/")
+                        || value.Contains("(")
+                        || value.Contains(")"))
+                    {
+                        return;
+                    }
                     if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double d))
                     {
                         Error("Некорректное значение float");
@@ -428,7 +484,93 @@ namespace Komp_lab1
                 output.AppendText("\n");
             }
         }
+        private string ParseExpression(List<TACInstruction> localTac)
+        {
+            string left = ParseTerm(localTac);
 
+            while (Current.Type == TokenType.Operator &&
+                  (Current.Value == "+" || Current.Value == "-"))
+            {
+                string op = Current.Value;
+                Next();
+
+                string right = ParseTerm(localTac);
+
+                string temp = NewTemp();
+
+                localTac.Add(new TACInstruction(
+                    op,
+                    left,
+                    right,
+                    temp
+                ));
+
+                left = temp;
+            }
+
+            return left;
+        }
+        private string ParseTerm(List<TACInstruction> localTac)
+        {
+            string left = ParseFactor(localTac);
+
+            while (Current.Type == TokenType.Operator &&
+                  (Current.Value == "*" ||
+                   Current.Value == "/" ||
+                   Current.Value == "%"))
+            {
+                string op = Current.Value;
+                Next();
+
+                string right = ParseFactor(localTac);
+
+                string temp = NewTemp();
+
+                localTac.Add(new TACInstruction(
+                    op,
+                    left,
+                    right,
+                    temp
+                ));
+
+                left = temp;
+            }
+
+            return left;
+        }
+        private string ParseFactor(List<TACInstruction> localTac)
+        {
+            if (Current.Type == TokenType.IntegerLiteral)
+            {
+                string value = Current.Value;
+                Next();
+                return value;
+            }
+
+            if (Current.Type == TokenType.Separator &&
+                Current.Value == "(")
+            {
+                Next();
+
+                string expr =
+                    ParseExpression(localTac);
+
+                if (Current.Type == TokenType.Separator &&
+                    Current.Value == ")")
+                {
+                    Next();
+                    return expr;
+                }
+
+                Error("Ожидалась ')'");
+
+                return expr;
+            }
+
+            Error("Ожидалось число");
+
+            return "0";
+        }
         private void PrintNode(StructDeclNode node, string indent)
         {
             output.AppendText($"{indent}StructDeclNode\n");
@@ -480,32 +622,41 @@ namespace Komp_lab1
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("digraph AST {");
-            sb.AppendLine("node [shape=box, style=filled, fillcolor=lightblue];");
+            sb.AppendLine("node [shape=box];");
 
             int id = 0;
 
             foreach (var s in Structs)
             {
                 int structId = id++;
-                sb.AppendLine($"node{structId} [label=\"Struct\\n{s.Name}\"];");
+                string safeStruct = Escape(s.Name);
+
+                sb.AppendLine($"node{structId} [label=\"StructDeclNode\\nname: {safeStruct}\", fillcolor=lightblue, style=filled];");
+
+                int fieldsId = id++;
+                sb.AppendLine($"node{fieldsId} [label=\"fields\", fillcolor=lightgray, style=filled];");
+                sb.AppendLine($"node{structId} -> node{fieldsId};");
 
                 foreach (var f in s.Fields)
                 {
                     int fieldId = id++;
+                    sb.AppendLine($"node{fieldId} [label=\"FieldDeclNode\", fillcolor=lightgreen, style=filled];");
+                    sb.AppendLine($"node{fieldsId} -> node{fieldId};");
 
-                    string safeName = Escape(f.Name);
-                    string safeType = Escape(f.Type);
+                    int nameId = id++;
+                    sb.AppendLine($"node{nameId} [label=\"name: {Escape(f.Name)}\"];");
+                    sb.AppendLine($"node{fieldId} -> node{nameId};");
 
-                    string label = $"Field\\nName: {safeName}\\nType: {safeType}";
+                    int typeId = id++;
+                    sb.AppendLine($"node{typeId} [label=\"type: {Escape(f.Type)}\"];");
+                    sb.AppendLine($"node{fieldId} -> node{typeId};");
 
                     if (f.Value != null)
                     {
-                        string safeValue = Escape(f.Value);
-                        label += $"\\nValue: {safeValue}";
+                        int valueId = id++;
+                        sb.AppendLine($"node{valueId} [label=\"value: {Escape(f.Value)}\"];");
+                        sb.AppendLine($"node{fieldId} -> node{valueId};");
                     }
-
-                    sb.AppendLine($"node{fieldId} [label=\"{label}\", fillcolor=lightgreen];");
-                    sb.AppendLine($"node{structId} -> node{fieldId};");
                 }
             }
 
@@ -522,6 +673,10 @@ namespace Komp_lab1
         private void Next()
         {
             position++;
+        }
+        private string NewTemp()
+        {
+            return "t" + tempCounter++;
         }
         private bool IsType(string value)
         {

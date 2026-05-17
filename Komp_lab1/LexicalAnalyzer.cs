@@ -15,7 +15,7 @@ namespace Komp_lab1
 
         private readonly HashSet<char> operators = new HashSet<char>
         {
-            '='
+            '=', '-', '+', '*',  '/', '%'
         };
         private readonly HashSet<string> booleanLiterals = new HashSet<string>
         {
@@ -25,7 +25,7 @@ namespace Komp_lab1
             "string", "int", "bool", "array", "float", "struct"
         };
         private readonly HashSet<string> separators = new HashSet<string> {
-            "{", "}", ";", "[" , "]", ","
+            "{", "}", ";", "[" , "]", ",", "(", ")"
         };
         public LexicalAnalyzer(string text)
         {
@@ -91,7 +91,8 @@ namespace Komp_lab1
                 }
                 if (operators.Contains(c))
                 {
-                    tokens.Add(new Token(TokenType.Operator, c.ToString(), position++, line));
+                    //tokens.Add(new Token(TokenType.Operator, c.ToString(), position++, line));
+                    tokens.Add(ReadOperator());
                     continue;
                 }
                 tokens.Add(Unknown());
@@ -211,6 +212,32 @@ namespace Komp_lab1
             string str = input.Substring(start, position - start);
 
             return new Token(TokenType.StringLiteral, str, start, line);
+        }
+        Token ReadOperator()
+        {
+            int start = position;
+            int startLine = line;
+
+            char current = input[position];
+
+            if (position + 1 < input.Length)
+            {
+                char next = input[position + 1];
+
+                if (current == '*' && next == '*')
+                {
+                    position += 2;
+                    return new Token(TokenType.Operator, "**", start, startLine);
+                }
+
+                if (current == '/' && next == '/')
+                {
+                    position += 2;
+                    return new Token(TokenType.Operator, "//", start, startLine);
+                }
+            }
+            position++;
+            return new Token(TokenType.Operator, current.ToString(), start, startLine);
         }
         private bool IsLatinLetter(char c)
         {
